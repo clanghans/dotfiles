@@ -37,6 +37,7 @@ This function should only modify configuration layer settings."
             c-c++-enable-clang-support t
             c-c++-default-mode-for-headers 'c++-mode
             )
+     cmake
      (auto-completion :variables
                       auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'cycle
@@ -50,6 +51,7 @@ This function should only modify configuration layer settings."
      (lsp :variables
           lsp-clients-clangd-args '("-j=4" "--background-index" "--log=error" "--header-insertion=iwyu" "--header-insertion-decorators")
           lsp-auto-guess-root t
+          lsp-ui-doc-position 'top
           )
 
      (shell :variables
