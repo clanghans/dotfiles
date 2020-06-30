@@ -79,12 +79,18 @@ This function should only modify configuration layer settings."
      semantic
      shell-scripts
      themes-megapack
+     ;; markdown
 
      version-control
 
      (syntax-checking :variables
                       syntax-checking-enable-by-default nil
                       )
+
+     (dash :variables
+           dash-autoload-common-docsets nil
+           dash-docs-use-workaround-for-emacs-bug nil
+           )
      )
 
    ;; List of additional packages that will be installed without being
