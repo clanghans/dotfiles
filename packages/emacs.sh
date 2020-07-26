@@ -28,7 +28,7 @@ checkResult 0 "git clone failed. Abort."
 pushd emacs
 ./autogen.sh
 
-./configure --prefix=~/stow/emacs --with-x --with-xml2
+./configure --prefix=/home/$(whoami)/package/emacs --with-x --with-xml2
 checkResult $? "configure failed. Abort."
 
 make -j8 all
@@ -38,7 +38,7 @@ make install
 checkResult $? "installation failed. Abort."
 popd
 
-pushd ~/stow/
+pushd ~/package/
 sudo stow -v -S emacs/ -t /usr/local --defer=share/info/dir
 checkResult $? "stow failed. Abort."
 
