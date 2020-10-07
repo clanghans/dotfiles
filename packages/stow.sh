@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+# STOW
+# stow 2.3.1 provides --dotfile option
+#  $>stow -v -S stow-2.3.1/ -t /usr/local
+# dotfiles
+#  $>stow --dotfiles -v -S dotfiles -t /home/raziel
+# emacs
+#  $>sudo stow  -v -S emacs26/ -t /usr/local --defer=share/info/dir
 
 set -x
 # download, compile and install the newest stow package
