@@ -41,6 +41,7 @@ EOF
 
 docker run -it -v $(pwd):/tmp emacsbuild:latest
 
+## TODO check if stow is available in PATH and use it
 # pushd ~/package/
 # sudo stow -v -S emacs/ -t /usr/local --defer=share/info/dir
 
