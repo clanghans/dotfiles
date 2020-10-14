@@ -1,23 +1,82 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-# cleanup on exit
-function cleanup {
-    if [ -d emacs ]; then
-        rm -rf emacs
+PROCESSORS=$(grep -c processor /proc/cpuinfo)
+
+if [ ! -f "linux-x64" ]; then
+    # bootstrap
+    ./boostrap.sh
+fi
+
+# $1 repo source
+# $2 directory
+function git_check_clone {
+    if [ ! -d "$2" ]; then
+        git clone --depth 1 $1 $2
+    else
+        cd $2
+        git pull $1
+        cd ..
     fi
 }
-trap cleanup EXIT
 
 # download
-git clone --depth 1 git://git.savannah.gnu.org/emacs.git
+REPO="git://git.savannah.gnu.org/emacs.git"
+REPO_DIR="emacs-latest"
+STOW_DIR=/home/raziel/pkg/emacs
 
-pushd emacs
-./autogen.sh
+git_check_clone $REPO $REPO_DIR
 
-./configure --prefix=/home/$1/package/emacs --with-x --with-xml2
 
-make -j8 all
+function compile {
+    pushd $REPO_DIR
+    ./autogen.sh
 
-make install
-popd
+    ./configure --with-x --with-xml2 --with-json --without-sound --with-gnutls --prefix=${STOW_DIR}
+
+    make -j${PROCESSORS} all
+
+    popd
+}
+
+function install {
+    pushd $REPO_DIR
+    make install-arch-dep install-arch-indep prefix=${STOW_DIR}
+    popd
+
+    pushd ~/pkg
+    sudo stow -v -S emacs/ -t /usr/local --defer=share/info/dir
+    popd
+}
+
+function main {
+    #------------------------------------------------------------------------------
+    # Option processing
+    #
+    while [[ $# != 0 ]]; do
+        case $1 in
+
+            --compile)
+                compile
+                shift 1
+                ;;
+
+            --install)
+                install
+                shift 1
+                ;;
+
+            -*)
+                echo Unknown option \"$1\"
+                exit
+                ;;
+
+            *)
+                echo Unknown option \"$1\"
+                break
+                ;;
+
+        esac
+    done
+}
+main $@

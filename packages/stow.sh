@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euxo pipefail
+
 # STOW
 # stow 2.3.1 provides --dotfile option
 #  $>stow -v -S stow-2.3.1/ -t /usr/local
@@ -7,45 +9,79 @@
 # emacs
 #  $>sudo stow  -v -S emacs26/ -t /usr/local --defer=share/info/dir
 
-set -x
 # download, compile and install the newest stow package
 
-STOW_VERSION=stow-2.3.1
-STOW_TAR=${STOW_VERSION}.tar.gz
+PROCESSORS=$(grep -c processor /proc/cpuinfo)
 
-#
-# PREREQUISITES
-sudo cpan -i Test::Output Test::More
+if [ ! -f "linux-x64" ]; then
+    # bootstrap
+    ./boostrap
+fi
 
-# cleanup on exit
-function cleanup {
-    if [ -d "${STOW_VERSION}" ]; then
-        rm -rf ${STOW_VERSION}
-    fi
-
-    if [ -f "${STOW_TAR}" ]; then
-        rm ${STOW_TAR}
+# $1 repo source
+# $2 directory
+function git_check_clone {
+    if [ ! -d "$2" ]; then
+        git clone --depth 1 $1 $2
+    else
+        cd $2
+        git pull $1
+        cd ..
     fi
 }
-trap cleanup EXIT
+
+REPO=https://github.com/aspiers/stow.git
+REPO_DIR=stow-2.3.1
+STOW_DIR=/home/raziel/pkg/stow-2.3.1
+
+git_check_clone $REPO $REPO_DIR
+
+function compile {
+    pushd ${REPO_DIR}
+    autoreconf -iv
+    ./configure --prefix=/home/raziel/pkg/${REPO_DIR}
+    make
+    popd
+}
+
+function install {
+    pushd $REPO_DIR
+    make install
+    popd
+
+    pushd ~/pkg
+    sudo stow -v -S ${REPODIR} -t /usr/local
+    popd
+}
 
 function main {
+    #------------------------------------------------------------------------------
+    # Option processing
+    #
+    while [[ $# != 0 ]]; do
+        case $1 in
 
-    wget https://ftp.gnu.org/gnu/stow/${STOW_TAR}
-    tar -xvpzf ${STOW_TAR}
+            --compile)
+                compile
+                shift 1
+                ;;
 
-    pushd ${STOW_VERSION}
+            --install)
+                install
+                shift 1
+                ;;
 
-    ./configure --prefix=/home/$(whoami)/package/${STOW_VERSION}
-    make
-    make install
+            -*)
+                echo Unknown option \"$1\"
+                exit
+                ;;
 
-    popd
+            *)
+                echo Unknown option \"$1\"
+                break
+                ;;
 
-    pushd ~/package
-    sudo stow -v -S ${STOW_VERSION} -t /usr/local
-
-    popd
+        esac
+    done
 }
-
-main $*
+main $@
