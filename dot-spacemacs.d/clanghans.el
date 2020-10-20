@@ -4,6 +4,7 @@
 
 (global-company-mode t)
 (yas-global-mode t)
+(global-git-commit-mode t)
 (spacemacs/toggle-camel-case-motion-globally-on)
 
 (setq user-full-name "Chris Langhans")
