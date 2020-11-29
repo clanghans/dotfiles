@@ -120,7 +120,7 @@
 ;; clangd
 ;;
 (defun compile-command-link ()
-  "Create a symbolic link from the root directory to the compiel-command.json file"
+  "Create a symbolic link from the root directory to the compile-command.json file"
   (when (projectile-project-p)
     (setq cc_json "compile_commands.json")
     ;; find file in project root - recursive

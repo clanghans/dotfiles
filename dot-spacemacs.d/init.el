@@ -67,7 +67,6 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      helm
-     ;; html
      ibuffer
      org
      (python :variables
@@ -75,22 +74,23 @@ This function should only modify configuration layer settings."
              python-formatter 'yapf
              python-format-on-save t
              )
-     ;; ranger
      semantic
      shell-scripts
      themes-megapack
      ;; markdown
 
-     version-control
-
+     ;; version-control
      (syntax-checking :variables
                       syntax-checking-enable-by-default nil
                       )
 
-     (dash :variables
-           dash-autoload-common-docsets nil
-           dash-docs-use-workaround-for-emacs-bug nil
-           )
+     ;; debug
+     ;; (dash :variables
+     ;;       dash-autoload-common-docsets nil
+     ;;       helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets/"
+     ;;       dash-docs-use-workaround-for-emacs-bug nil
+     ;;       )
+
      )
 
    ;; List of additional packages that will be installed without being
@@ -100,7 +100,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(hercules)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -115,7 +115,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-but-keep-unused))
+   dotspacemacs-install-packages 'used-only))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -172,7 +172,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
    ;; latest version of packages from MELPA. (default nil)
-   dotspacemacs-use-spacelpa nil
+   dotspacemacs-use-spacelpa t
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
    ;; (default t)
@@ -366,7 +366,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
    ;; borderless fullscreen. (default nil)
-   dotspacemacs-undecorated-at-startup t
+   dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
@@ -441,7 +441,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server t
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -452,7 +452,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
 
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
@@ -536,7 +536,36 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (add-to-list 'load-path "~/.spacemacs.d/")
   (require 'clanghans)
+
+  (with-eval-after-load 'org
+    (setq org-startup-indented t
+          org-src-tab-acts-natively t
+          org-hide-emphasis-markers t
+          org-fontify-done-headline t
+          org-hide-leading-stars t
+          org-pretty-entities t
+          )
+    )
+
+  (with-eval-after-load 'org-brain
+    (setq org-brain-path "~/org/brain")
+
+    (hercules-def
+     :toggle-funs #'org-brain-visualize-mode
+     ;; :hide-funs '(org-brain-visualize-quit org-brain-open-resource org-brain-goto-child)
+     :keymap 'org-brain-visualize-mode-map
+     ;; :transient t
+     )
+
+
+    )
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+)

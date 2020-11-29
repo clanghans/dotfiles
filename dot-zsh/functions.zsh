@@ -52,7 +52,7 @@ ff() {
 }
 
 # fd - cd to selected directory
-fd() {
+ffd() {
     local dir
     dir=$(find ${1:-.} -path '*/\.*' -prune \
                -o -type d -print 2> /dev/null | fzf +m) &&
@@ -60,7 +60,7 @@ fd() {
 }
 
 # fda - including hidden directories
-fda() {
+ffda() {
     local dir
     dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
 }
@@ -124,4 +124,29 @@ fshow() {
                 xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
                 {}
                 FZF-EOF"
+}
+
+# Compress pdf files with ghostscript
+pdfcompress()
+{
+    # this function uses 2 arguments:
+    #     $1 input file name
+    #     $2 output file name
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen \
+       -dNOPAUSE -dQUIET -dBATCH -sOutputFile=${2} ${1}
+}
+
+# Extract ranged pdf pages with ghostscript
+pdfpextr()
+{
+    # this function uses 3 arguments:
+    #     $1 is the first page of the range to extract
+    #     $2 is the last page of the range to extract
+    #     $3 is the input file
+    #     output file will be named "inputfile_pXX-pYY.pdf"
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
+       -dFirstPage=${1} \
+       -dLastPage=${2} \
+       -sOutputFile=${3%.pdf}_p${1}-p${2}.pdf \
+       ${3}
 }
