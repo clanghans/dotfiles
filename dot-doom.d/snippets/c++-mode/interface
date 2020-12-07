@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: pure virtual interface
+# key:interface
+# --
+class ${1:Interface}
+{
+public:
+$1() = default;
+
+// rule of five
+// no copy, no move to prevent slicing
+virtual ~$1() = default;
+$1(const $1&) = delete;
+$1& operator=(const $1&) = delete;
+$1($1&&) = delete;
+$1& operator=($1&&) = delete;
+};
