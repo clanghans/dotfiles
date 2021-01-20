@@ -28,9 +28,9 @@
 ;; (setq doom-theme 'doom-acario-dark)
 ;; (setq doom-theme 'doom-monokai)
 ;; (setq doom-theme 'doom-dark+)
-(setq doom-theme 'doom-material)
+;; (setq doom-theme 'doom-material)
 ;; (setq doom-theme 'doom-nord)
-;; (setq doom-theme 'doom-palenight)
+(setq doom-theme 'doom-palenight)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -94,7 +94,13 @@
 ;; carbon-now-sh
 
 (after! org-brain
-  (setq org-brain-path "~/org/brain")
+  (map! :map org-brain-visualize-mode-map
+        :desc "which-key" "?" #'which-key-show-major-mode
+        :desc "which-key" "SPC" #'which-key-show-major-mode
+        )
+
+  (setq org-brain-path "~/org/brain"
+        org-brain-scan-for-header-entries nil)
   (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
   )
 
@@ -123,15 +129,16 @@
 
 ;; always recenter on going off screen
 ;; (setq scroll-conservatively 0)
-(setq scroll-margin 5)
-(setq which-key-idle-delay 0.3)
-(setq require-final-newline t)
-;; raise undo limit to 100MB
-(setq undo-limit 100000000)
-;; nobody wants to loose changes
-(setq auto-save-default t)
+(setq scroll-margin 5
+      which-key-idle-delay 0.3
+      require-final-newline t
+      ;; raise undo limit to 100MB
+      undo-limit 100000000
+      ;; nobody wants to loose changes
+      auto-save-default t)
 
 (global-subword-mode 1)
+(+global-word-wrap-mode +1)
 
 (setq evil-escape-unordered-key-sequence t
       ;; evil search commands cross line endings
@@ -163,6 +170,9 @@
 
 (after! swiper
   (setq swiper-goto-start-of-match t))
+
+(setq lsp-diagnostics-provider :none)
+
 ;;
 ;; clangd
 ;;

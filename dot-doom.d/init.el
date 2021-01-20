@@ -14,6 +14,12 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+;; very early config because it has to be loaded before evil
+(use-package-hook! evil
+  :pre-init
+  (setq evil-respect-visual-line-mode t) ;; sane j and k behavior
+  t)
+
 (doom! :input
        ;;chinese
        ;;japanese
@@ -50,7 +56,7 @@
        ;;unicode
        vc-gutter
        vi-tilde-fringe
-       ;;window-select
+       ;; window-select
        workspaces
        ;;zen
 
@@ -192,3 +198,4 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
