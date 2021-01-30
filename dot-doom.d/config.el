@@ -149,24 +149,31 @@
       evil-split-window-below t
       evil-want-fine-undo t)
 
-;; recursively ignore projects
-(setq projectile-ignored-projects '("~/" "~/.emacs.d/.local/straight/repos/" "/tmp"))
-(defun projectile-ignored-project-function (filepath)
-  "Return t if FILEPATH is wihtin any of 'projectile-ignored-projects'"
-  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+(after! projectile
+  ;; recursively ignore projects
+  (setq projectile-ignored-projects '("~/" "~/.emacs.d/.local/straight/repos/" "/tmp"))
+  (defun projectile-ignored-project-function (filepath)
+    "Return t if FILEPATH is wihtin any of 'projectile-ignored-projects'"
+    (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+  ;; ignore ccls cache dirs
+  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+  )
+
 
 ;; whitespace wars
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
 
-;; counsel-dash
-(require 'counsel-dash)
+;; docsets
+(set-docsets! 'python-mode "Python_3")
+(set-docsets! 'sh-mode "Bash")
+(set-docsets! '(c-mode c++-mode) "C" "C++")
+(set-docsets! 'cmake-mode "CMake")
+(set-lookup-handlers! '(c-mode c++-mode)
+  :documentation #'+lookup/documentation)
+
 (setq +lookup-open-url-fn #'eww)
-;; (set-docsets! 'js2-mode "JavaScript" "JQuery")
-;; ;; Add docsets to minor modes by starting DOCSETS with :add
-;; (set-docsets! 'rjsx-mode :add "React")
-;; ;; Or remove docsets from minor modes
-;; (set-docsets! 'nodejs-mode :remove "JQuery")
+
 
 (after! ivy
   (setq ivy-more-chars-alist
