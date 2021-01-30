@@ -96,7 +96,7 @@
 
        :tools
        ;;ansible
-       (debugger +lsp)
+       (debugger)
        ;;direnv
        ;;docker
        ;;editorconfig

@@ -111,11 +111,11 @@
   +format-with-lsp nil
   )
 
-(after! ccls
-  (setq ccls-initialization-options
-        (append ccls-initialization-options
-                `(:clang, (list :extraArgs [""]
-                                :resourceDir (cdr (doom-call-process "clang" "-print-resource-dir")))))))
+;; (after! ccls
+;;   (setq ccls-initialization-options
+;;         (append ccls-initialization-options
+;;                 `(:clang, (list :extraArgs [""]
+;;                                 :resourceDir (cdr (doom-call-process "clang" "-print-resource-dir")))))))
 
 
 (setq-hook! 'cmake-mode-hook
@@ -168,10 +168,20 @@
 ;; ;; Or remove docsets from minor modes
 ;; (set-docsets! 'nodejs-mode :remove "JQuery")
 
+(after! ivy
+  (setq ivy-more-chars-alist
+        '((counsel-rg . 3)
+          (counsel-search . 2)
+          (t . 3)))
+  )
+
 (after! swiper
   (setq swiper-goto-start-of-match t))
 
-(setq lsp-diagnostics-provider :none)
+(after! lsp-mode
+  :config
+  (setq lsp-diagnostics-provider :none)
+  )
 
 ;;
 ;; clangd

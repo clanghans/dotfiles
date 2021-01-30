@@ -26,4 +26,18 @@ do
     source $file
 done
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+function fzf-setup()
+{
+    # fzf - manual installation
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+    local _ZSH_COMPLETION=/usr/share/doc/fzf/examples/completion.zsh
+    local _ZSH_BINDINGS=/usr/share/doc/fzf/examples/key-bindings.zsh
+    # fzf - apt-get installation
+    [ -f ${_ZSH_COMPLETION} ] && source ${_ZSH_COMPLETION}
+
+    # fzf - apt-get installation
+    [ -f ${_ZSH_BINDINGS} ] && source ${_ZSH_BINDINGS}
+}
+
+fzf-setup

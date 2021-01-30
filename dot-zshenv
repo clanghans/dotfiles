@@ -1,12 +1,7 @@
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
-# export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin"
-
-# Rootless Docker additions
-export PATH=/home/raziel/bin:$PATH
-export PATH=/home/raziel/.emacs.d/bin:$PATH
-export DOCKER_HOST=unix:///run/user/1000/docker.sock
-
+export PATH=~/bin:$PATH
+export PATH=~/.emacs.d/bin:$PATH
 
 export PAGER="less"
 export LESS="-isMFXR"
