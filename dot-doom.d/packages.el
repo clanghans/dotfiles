@@ -50,5 +50,4 @@
 ;(unpin! t)
 
 (package! counsel-dash)
-(package! org-brain)
 (package! ws-butler)

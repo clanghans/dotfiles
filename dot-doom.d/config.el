@@ -71,12 +71,8 @@
   )
  (:leader
   :prefix "w"
-  :desc "delete-other-window" "1" #'delete-other
+  :desc "delete-other-window" "1" #'delete-other-windows
   ;; :desc "V"
-  )
- (:leader
-  :prefix "o"
-  :desc "org-brain-visualize" "v" #'org-brain-visualize
   )
  )
 
@@ -92,17 +88,6 @@
 
 ;; Interesting packages
 ;; carbon-now-sh
-
-(after! org-brain
-  (map! :map org-brain-visualize-mode-map
-        :desc "which-key" "?" #'which-key-show-major-mode
-        :desc "which-key" "SPC" #'which-key-show-major-mode
-        )
-
-  (setq org-brain-path "~/org/brain"
-        org-brain-scan-for-header-entries nil)
-  (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
-  )
 
 ;; (setq-default cmake-tab-width 4)
 ;; (setq-default c-basic-offset 4)
