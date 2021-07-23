@@ -4,6 +4,7 @@ source ~/.zsh/antigen/antigen.zsh
 antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle fzf
 antigen bundle git
 antigen bundle pip
 antigen bundle command-not-found
@@ -12,8 +13,9 @@ antigen bundle supercrabtree/k
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
-antigen bundle zsh-users/zsh-history-substring-search
-# antigen bundle zsh-users/zsh-autosuggestions
+#antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-autosuggestions
 
 # Tell Antigen that you're done.
 antigen apply
@@ -26,18 +28,3 @@ do
     source $file
 done
 
-function fzf-setup()
-{
-    # fzf - manual installation
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-    local _ZSH_COMPLETION=/usr/share/doc/fzf/examples/completion.zsh
-    local _ZSH_BINDINGS=/usr/share/doc/fzf/examples/key-bindings.zsh
-    # fzf - apt-get installation
-    [ -f ${_ZSH_COMPLETION} ] && source ${_ZSH_COMPLETION}
-
-    # fzf - apt-get installation
-    [ -f ${_ZSH_BINDINGS} ] && source ${_ZSH_BINDINGS}
-}
-
-fzf-setup

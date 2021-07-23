@@ -25,6 +25,10 @@ function w () {
     mcd ~/Workspace
 }
 
+function batdiff() {
+    git diff --name-only --diff-filter=d | xargs bat --diff
+}
+
 # calc hashsums of the most common hashalgorithms
 function hashsum () {
     for file in "$@"

@@ -8,18 +8,22 @@ alias -g L="| less"
 alias -g TL="| tail -20"
 alias -g NUL=">/dev/null 2>&1"
 alias -g ERRNUL="2>/dev/null"
+alias -g Z='| fzf'
 
 alias h="history"
 alias H="history | grep -i"
 
 ## k is the new ls
-alias k='k -h'
 alias l='k -h'
 alias ll='k -h'
 alias la='k -Ah'
 #sorted by date,recursive,show type,human readable
 alias lr='ls -tRFh --color=always'
 
+alias cat="bat"
+# alias bd="batdiff"
+
+alias chmodx='chmod u+x'
 
 # FASD
 #eual "$(fasd --init auto)"

@@ -3,10 +3,8 @@ if [ -f "$HOME/.Xmodmap" ]; then
    xmodmap "$HOME/.Xmodmap"
 fi
 
-# Geze Proxy settings
-export ftp_proxy=""
-export https_proxy=""
-export http_proxy=""
+# FZF config
+FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 # Disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
