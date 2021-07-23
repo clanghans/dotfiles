@@ -36,7 +36,7 @@ alias chmodx='chmod u+x'
 #alias o='a -e xdg-open' # quick opening files with xdg-open
 
 # WEB DEV
-alias serve='python -m SimpleHTTPServer 8000'
+alias serve='python2 -m SimpleHTTPServer 8000'
 
 alias cd..="cd .." # I often make this mistake
 
