@@ -102,10 +102,11 @@
 ;;                 `(:clang, (list :extraArgs [""]
 ;;                                 :resourceDir (cdr (doom-call-process "clang" "-print-resource-dir")))))))
 
+(setq c-default-style "k&r"
+          c-basic-offset 4)
 
 (setq-hook! 'cmake-mode-hook
-  cmake-tab-width 4
-  c-basic-offset 4)
+  cmake-tab-width 4)
 
 ;; disable code formatting in specific modes
 (setq +format-on-save-enabled-modes
@@ -122,8 +123,9 @@
       ;; nobody wants to loose changes
       auto-save-default t)
 
-(global-subword-mode 1)
 (+global-word-wrap-mode +1)
+(global-so-long-mode -1)
+(global-visual-line-mode 1)
 
 (setq evil-escape-unordered-key-sequence t
       ;; evil search commands cross line endings
@@ -135,7 +137,7 @@
       evil-want-fine-undo t)
 
 ;; recursively ignore projects
-(setq projectile-ignored-projects '("~/" "~/.emacs.d/.local/straight/repos/" "/tmp"))
+(setq projectile-ignored-projects '("~/" "~/.emacs.d/.local/straight/repos/" "/tmp" "~/.depdl/"))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is wihtin any of 'projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
@@ -147,18 +149,22 @@
 ;; counsel-dash
 (require 'counsel-dash)
 (setq +lookup-open-url-fn #'eww)
-;; (set-docsets! 'js2-mode "JavaScript" "JQuery")
-;; ;; Add docsets to minor modes by starting DOCSETS with :add
-;; (set-docsets! 'rjsx-mode :add "React")
-;; ;; Or remove docsets from minor modes
-;; (set-docsets! 'nodejs-mode :remove "JQuery")
+(set-docsets! '(c-mode c++-mode) "C++")
+(set-docsets! 'cmake-mode "CMake")
+
+;; browse with EWW
+(setq browse-url-browser-function 'eww-browse-url)
+
+;; company
+(after! company
+  (setq company-idle-delay 0.0
+        company-minimum-prefix-length 1))
 
 (after! ivy
   (setq ivy-more-chars-alist
         '((counsel-rg . 3)
           (counsel-search . 2)
-          (t . 3)))
-  )
+          (t . 3))))
 
 (after! swiper
   (setq swiper-goto-start-of-match t))
@@ -166,7 +172,14 @@
 (after! lsp-mode
   :config
   (setq lsp-diagnostics-provider :none)
-  )
+  (setq lsp-enable-file-watchers nil))
+
+;; compilation buffer
+(set-popup-rule! "^\\*compilation" :side 'bottom :size 0.6 :select nil :ttl 0)
+
+;; PLANTUML
+(set-popup-rule! "^\\*PLANTUML" :side 'right :size 0.6 :select nil :ttl 0)
+(add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
 
 ;;
 ;; clangd
@@ -186,3 +199,10 @@
     (make-symbolic-link clanghans/relative-target (concat (projectile-project-root) clanghans/cc_json) t)
     )
   )
+
+(defun clanghans/gdbmi-bnf-target-stream-output (c-string)
+  "Change behavior for GDB/MI target the target-stream-output so that it is displayed to the console."
+  (gdb-console c-string)
+  )
+
+(advice-add 'gdbmi-bnf-target-stream-output :override 'clanghans/gdbmi-bnf-target-stream-output)

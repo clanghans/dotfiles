@@ -30,7 +30,6 @@
        ;;helm
        ;;ido
        (ivy
-        +fuzzy
         +prescient
         +icons)
 
@@ -50,9 +49,10 @@
        nav-flash
        ;;neotree
        ophints
-       (popup +defaults)
+       (popup +all
+              +defaults)
        ;;tabs
-       ;;treemacs
+       treemacs
        ;;unicode
        vc-gutter
        vi-tilde-fringe
@@ -69,7 +69,7 @@
        format
        ;;god
        ;;lispy
-       ;;multiple-cursors
+       multiple-cursors
        ;;objed
        ;;parinfer
        ;;rotate-text
@@ -96,10 +96,10 @@
 
        :tools
        ;;ansible
-       (debugger)
+       debugger
        ;;direnv
        ;;docker
-       ;;editorconfig
+       ;; editorconfig
        ;;ein
        (eval +overlay)
        ;;gist
@@ -161,6 +161,7 @@
         +brain
         +gnuplot
         +hugo
+        +roam
         +pretty)
 
        ;;php
@@ -171,7 +172,7 @@
        ;;racket
        ;;raku
        ;;rest
-       ;;rst
+       rst
        ;;(ruby +rails)
        ;;rust
        ;;scala
