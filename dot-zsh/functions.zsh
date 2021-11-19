@@ -1,9 +1,4 @@
 
-# emacs client
-function ec () {
-    emacsclient -n -c -a "" $@
-}
-
 # reload zsh/shell configuration
 function reload () {
     source ~/.zshrc

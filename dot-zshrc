@@ -5,10 +5,17 @@ antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle fzf
+antigen bundle fd
+antigen bundle git-auto-fetch
+antigen bundle git-extras
 antigen bundle git
 antigen bundle pip
+antigen bundle sudo
+antigen bundle emacs
 antigen bundle command-not-found
-antigen bundle supercrabtree/k
+antigen bundle history
+antigen bundle tmux
+antigen bundle zoxide
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -17,14 +24,20 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-autosuggestions
 
+antigen theme imajes
+
 # Tell Antigen that you're done.
 antigen apply
 
 # load zsh config and theme files
-config_files=(~/.zsh/*.(zsh|zsh-theme))
+# config_files=(~/.zsh/*.(zsh|zsh-theme))
+config_files=(~/.zsh/*.zsh)
 for file in ${config_files}
 do
     echo $file
     source $file
 done
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 

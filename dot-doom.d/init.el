@@ -32,6 +32,7 @@
        (ivy
         +prescient
         +icons)
+       ;; (vertico +icons)
 
        :ui
        ;;deft
@@ -118,7 +119,7 @@
 
        :os
        ;; (:if IS-MAC macos)
-       ;;tty
+       tty
 
        :lang
        ;;agda
@@ -158,7 +159,6 @@
        ;;nix
        ;;ocaml
        (org
-        +brain
         +gnuplot
         +hugo
         +roam
@@ -167,7 +167,7 @@
        ;;php
        plantuml
        ;;purescript
-       python
+       (python +lsp)
        ;;qt
        ;;racket
        ;;raku

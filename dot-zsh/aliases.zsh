@@ -1,3 +1,8 @@
+# GIT
+alias gwa='git worktree add'
+alias gwl='git worktree list'
+alias gwr='git worktree remove'
+
 # MISC
 alias x="exit"
 alias xo="xdg-open"
@@ -10,30 +15,18 @@ alias -g NUL=">/dev/null 2>&1"
 alias -g ERRNUL="2>/dev/null"
 alias -g Z='| fzf'
 
-alias h="history"
-alias H="history | grep -i"
-
 ## k is the new ls
-alias l='k -h'
-alias ll='k -h'
-alias la='k -Ah'
-#sorted by date,recursive,show type,human readable
-alias lr='ls -tRFh --color=always'
+alias l='exa'
+alias ls='exa'
+alias ll='exa --long --time-style=long-iso --git'
+alias la='exa --all --time-style=long-iso'
+alias lr='exa --recurse'
+alias lt='exa --tree'
 
 alias cat="bat"
 # alias bd="batdiff"
 
 alias chmodx='chmod u+x'
-
-# FASD
-#eual "$(fasd --init auto)"
-#alias c='fasd_cd -d'
-# f for files
-# a for dirs and files
-# c for dirs
-# open everything
-#alias e='f -e ec' # quick opening files with emacs
-#alias o='a -e xdg-open' # quick opening files with xdg-open
 
 # WEB DEV
 alias serve='python2 -m SimpleHTTPServer 8000'

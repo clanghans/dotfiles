@@ -16,6 +16,8 @@ COMPLETION_WAITING_DOTS="true"
 # status check for large repositories much, much faster.
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
+GIT_AUTO_FETCH_INTERVAL=120
+
 # HISTORY settings
 HISTFILE="$HOME/.zhistory"
 HISTSIZE=10000000
