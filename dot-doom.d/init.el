@@ -177,7 +177,7 @@
        ;;rust
        ;;scala
        ;;scheme
-       sh
+       (sh +lsp)
        ;;sml
        ;;solidity
        ;;swift

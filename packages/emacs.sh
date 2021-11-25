@@ -5,7 +5,7 @@ PROCESSORS=$(grep -c processor /proc/cpuinfo)
 
 if [ ! -f "linux-x64" ]; then
     # bootstrap
-    ./boostrap.sh
+    ./bootstrap.sh
 fi
 
 # $1 repo source

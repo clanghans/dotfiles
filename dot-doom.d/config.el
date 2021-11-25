@@ -123,7 +123,6 @@
       ;; nobody wants to loose changes
       auto-save-default t)
 
-(+global-word-wrap-mode +1)
 (global-so-long-mode -1)
 (global-visual-line-mode 1)
 
