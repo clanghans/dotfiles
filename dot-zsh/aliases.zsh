@@ -11,7 +11,7 @@ alias ag="ag --pager 'less'"
 alias -g G="| grep -i"
 alias -g L="| less"
 alias -g TL="| tail -20"
-alias -g NUL=">/dev/null 2>&1"
+alias -g NUL="|& /dev/null"
 alias -g ERRNUL="2>/dev/null"
 alias -g Z='| fzf'
 
@@ -19,6 +19,7 @@ alias -g Z='| fzf'
 alias l='exa'
 alias ls='exa'
 alias ll='exa --long --time-style=long-iso --git'
+alias lla='exa --long --all --time-style=long-iso'
 alias la='exa --all --time-style=long-iso'
 alias lr='exa --recurse'
 alias lt='exa --tree'
