@@ -51,3 +51,6 @@
 
 (package! counsel-dash)
 (package! ws-butler)
+
+;; (package! tree-sitter)
+;; (package! tree-sitter-langs)

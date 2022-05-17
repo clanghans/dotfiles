@@ -38,7 +38,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type t)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -59,6 +59,15 @@
 ;; they are implemented.
 ;;
 (setq doom-modeline-workspace-name t)
+
+;; display perspective in modeline
+(after! doom-modeline
+  (setq doom-modeline-persp-name t)
+  )
+
+(after! persp-mode
+  (setq +workspaces-on-switch-project-behavior nil)
+  )
 
 (map!
  (:leader
@@ -89,24 +98,39 @@
 ;; Interesting packages
 ;; carbon-now-sh
 
-;; (setq-default cmake-tab-width 4)
-;; (setq-default c-basic-offset 4)
 (setq-hook! 'cmake-mode-hook
   cmake-tab-width 4
   +format-with-lsp nil
   )
+
+;; (use-package! tree-sitter
+;;   :config
+;;   (require 'tree-sitter-langs)
+;;   ;; (global-tree-sitter-mode)
+;;   ;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'c-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'c++-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'go-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'java-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'html-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'js-mode-hook #'tree-sitter-hl-mode)
+;;   (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+;; )
+
+;; LSP with clangd
+(setq lsp-clients-clangd-args '("-j=3"
+                                "--background-index"
+                                "--clang-tidy"
+                                "--completion-style=detailed"
+                                "--header-insertion=never"
+                                "--header-insertion-decorators=0"))
+(after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
 ;; (after! ccls
 ;;   (setq ccls-initialization-options
 ;;         (append ccls-initialization-options
 ;;                 `(:clang, (list :extraArgs [""]
 ;;                                 :resourceDir (cdr (doom-call-process "clang" "-print-resource-dir")))))))
-
-(setq c-default-style "k&r"
-          c-basic-offset 4)
-
-(setq-hook! 'cmake-mode-hook
-  cmake-tab-width 4)
 
 ;; disable code formatting in specific modes
 (setq +format-on-save-enabled-modes
@@ -141,8 +165,11 @@
   (defun projectile-ignored-project-function (filepath)
     "Return t if FILEPATH is wihtin any of 'projectile-ignored-projects'"
     (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
-  ;; ignore ccls cache dirs
-  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+  )
+
+;; Flycheck
+(after! flycheck
+  (setq-default flycheck-disabled-checkers '(python-flake8))
   )
 
 ;; company
@@ -173,34 +200,60 @@
 (after! swiper
   (setq swiper-goto-start-of-match t))
 
-(after! lsp-mode
-  :config
+(after! lsp-ui
+  (setq lsp-enable-file-watchers nil)
   (setq lsp-diagnostics-provider :none)
-  (setq lsp-enable-file-watchers nil))
+  (setq lsp-lens-enable nil))
+
+;; Yasnippet hacks
+;; '(warning-suppress-types
+;;   '(((yasnippet backquote-change))))
 
 ;; compilation buffer
-(set-popup-rule! "^\\*compilation" :side 'bottom :size 0.6 :select nil :ttl 0)
+(set-popup-rule! "^\\*compilation" :side 'bottom :size 0.5 :select nil :ttl 0)
 
 ;; PLANTUML
-(set-popup-rule! "^\\*PLANTUML" :side 'right :size 0.6 :select nil :ttl 0)
+(set-popup-rule! "^\\*PLANTUML" :side 'right :size 0.5 :select nil :ttl 0)
 (add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
 
-;;
-;; clangd
-;;
+(defun clanghans/c-mode-setup ()
+  "Ran in c-mode-hook"
+        (add-hook 'auto-save-hook
+                #'clanghans/compile-command-link nil t)
+)
+
 (defun clanghans/compile-command-link ()
   (interactive)
   "Create a symbolic link from the root directory to the compile-command.json file."
   (when (projectile-project-p)
-    (defconst clanghans/cc_json "compile_commands.json")
-    ;; find file in project root - recursive
-    (defconst clanghans/target
-      (directory-files-recursively (projectile-project-root) clanghans/cc_json))
-    ;; full path to relative
-    (defconst clanghans/relative-target
-      (file-relative-name (car clanghans/target) (projectile-project-root)))
-    ;; creating the symbolic link
-    (make-symbolic-link clanghans/relative-target (concat (projectile-project-root) clanghans/cc_json) t)
+    (let*((cc-json "compile_commands.json")
+          ;; find file in project root - recursive
+          (target (directory-files-recursively (projectile-project-root) cc-json)))
+      ;; only enter if compile command was found
+      (when target
+        ;; creating the symbolic link
+        (make-symbolic-link (file-relative-name (car target) (projectile-project-root)) (concat (projectile-project-root) cc-json) t)
+        )
+      )
+    )
+  )
+
+(defun clanghans/copy-azure-link-at-point ()
+  (interactive)
+  "Create a external link to the code in AzureDevops"
+  ;; "<remote-url>?path=/<fp>&version=GB<branch>&line=<line>&lineEnd=<next-line>&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents"
+  (let*(
+        (remote-url (replace-regexp-in-string "https://.*@" "https://"
+                                              (magit-get "remote" (magit-get-some-remote) "url")))
+        (branch (magit-get-current-branch))
+        (fp (file-relative-name buffer-file-name (projectile-project-root)))
+        (line (line-number-at-pos))
+        (next-line (1+ line))
+
+        (url (concat remote-url "?path=/" fp "&version=GB" branch "&line=" (number-to-string line) "&lineEnd=" (number-to-string next-line) "&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents"))
+        )
+                                        ; put the string into the kill ring
+    (kill-new url)
     )
   )
 
@@ -210,3 +263,6 @@
   )
 
 (advice-add 'gdbmi-bnf-target-stream-output :override 'clanghans/gdbmi-bnf-target-stream-output)
+
+(add-hook 'c-mode-common-hook
+          #'clanghans/c-mode-setup())

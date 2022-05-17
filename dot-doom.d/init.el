@@ -46,7 +46,7 @@
        indent-guides
        ;; ligatures
        ;;minimap
-       (modeline +light)
+       modeline
        nav-flash
        ;;neotree
        ophints
@@ -167,7 +167,11 @@
        ;;php
        plantuml
        ;;purescript
-       (python +lsp)
+       (python
+        +lsp
+        +pyenv
+        +pyright
+        +poetry)
        ;;qt
        ;;racket
        ;;raku
