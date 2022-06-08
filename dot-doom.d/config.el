@@ -91,8 +91,41 @@
         )
   )
 
+(after! org-superstar
+  ;; (setq org-bullets-bullet-list '("#"))
+  (set-face-attribute 'org-superstar-item nil :height 1.2)
+  (set-face-attribute 'org-superstar-header-bullet nil :height 1.2)
+  (set-face-attribute 'org-superstar-leading nil :height 1.3)
+  ;; Set different bullets, with one getting a terminal fallback.
+  (setq org-superstar-headline-bullets-list
+        '("◉" ("◈") "○" "▷"))
+  ;; Stop cycling bullets to emphasize hierarchy of headlines.
+  (setq org-superstar-cycle-headline-bullets nil)
+  ;; Hide away leading stars on terminal.
+  (setq org-superstar-leading-fallback ?\s)
+  )
+
 (after! org
-  (setq org-bullets-bullet-list '("#"))
+  (custom-set-faces!
+    '(org-document-title :height 1.2)
+    '(org-level-1 :inherit outline-1 :weight extra-bold :height 1.3)
+    '(org-level-2 :inherit outline-2 :weight bold :height 1.15)
+    '(org-level-3 :inherit outline-3 :weight bold :height 1.12)
+    '(org-level-4 :inherit outline-4 :weight bold :height 1.09)
+    '(org-level-5 :inherit outline-5 :weight semi-bold :height 1.06)
+    '(org-level-6 :inherit outline-6 :weight semi-bold :height 1.03)
+    '(org-level-7 :inherit outline-7 :weight semi-bold)
+    '(org-level-8 :inherit outline-8 :weight semi-bold)
+    ;; Ensure that anything that should be fixed-pitch in org buffers appears that
+    ;; way
+    '(org-block nil :foreground nil :inherit 'fixed-pitch)
+    '(org-code nil   :inherit '(shadow fixed-pitch))
+    '(org-table nil   :inherit '(shadow fixed-pitch))
+    '(org-verbatim nil :inherit '(shadow fixed-pitch))
+    '(org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    '(org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    '(org-checkbox nil :inherit 'fixed-pitch)
+    )
   )
 
 ;; Interesting packages

@@ -161,9 +161,10 @@
        (org
         +gnuplot
         +hugo
-        +roam
+        +roam2
         +pretty)
 
+       ;; roam-extra
        ;;php
        plantuml
        ;;purescript
