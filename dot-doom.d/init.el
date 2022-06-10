@@ -53,7 +53,7 @@
        (popup +all
               +defaults)
        ;;tabs
-       treemacs
+       ;;treemacs
        ;;unicode
        vc-gutter
        vi-tilde-fringe
