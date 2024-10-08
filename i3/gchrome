@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+CHROME_ARGS="--password-store=gnome"
+
+open_file() {
+    if [ -f "$1" ]; then
+        google-chrome ${CHROME_ARGS} "$1" &
+    else
+        echo "not a valid file"
+    fi
+}
+
+# start google-chrome in different flavors
+case $# in
+    0)
+        google-chrome ${CHROME_ARGS} &
+        ;;
+
+    1)
+        case $1 in
+            "phind")
+                google-chrome --app=https://phind.com &
+                ;;
+
+            "gmail")
+                google-chrome --app=https://mail.google.com/ &
+                ;;
+
+            "chatgpt")
+                google-chrome --app=https://chat.openai.com/ &
+                ;;
+
+            *)
+                open_file "$1"
+                ;;
+        esac
+        ;;
+
+    *)
+        echo "Invalid number of arguments"
+        ;;
+esac
