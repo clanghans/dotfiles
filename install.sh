@@ -1,6 +1,7 @@
 #!/bin/bash
 
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+LOCAL_BIN=${HOME}/.local/bin
 
 # Usage function to display script usage
 usage() {
@@ -38,6 +39,17 @@ create_symlink() {
   fi
 }
 
+git_clone_or_update() {
+  # Check if directory already exists
+  if [ -d "$2/.git" ]; then
+    echo "Repository already exists. Pulling latest changes in $2..."
+    git -C "$2" pull
+  else
+    echo "Cloning repository into $2..."
+    git clone -q "$1" "$2"
+  fi
+}
+
 install_pkgx() {
   if ! command -v pkgx --version &>/dev/null; then
     curl -fsS https://pkgx.sh | sh
@@ -46,20 +58,61 @@ install_pkgx() {
   export PATH="$HOME/.local/bin:$PATH"
 }
 
-install_zshrc() {
-  create_symlink "zsh/zshrc" "${HOME}/.zshrc"
-  create_symlink "zsh/zshenv" "${HOME}/.zshenv"
-  create_symlink "zsh/zsh" "${HOME}/.zsh"
+install_tools() {
+  pkgx install jq
+  pkgx install fzf
+  pkgx install ripgrep
+  pkgx install bat
+  pkgx install fd
+  pkgx install eza
+
+  pkgx install cmake
+  pkgx install shellcheck
 }
 
 install_tmux() {
   local tmux_conf_dir="${XDG_CONFIG_HOME}/tmux"
 
-  pkgx install tmux
+  if ! command -v tmux -V &>/dev/null; then
+    pkgx install tmux
+  fi
 
   create_symlink "tmux/tmux_conf" "${tmux_conf_dir}/tmux.conf"
   mkdir -p "${tmux_conf_dir}/plugins"
-  git clone https://github.com/tmux-plugins/tpm "${tmux_conf_dir}/plugins/tpm"
+  git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
+}
+
+install_zsh() {
+  if ! command -v zsh --version &>/dev/null; then
+    pkgx install zsh
+  fi
+
+  # install antigen
+  mkdir -p "${XDG_CONFIG_HOME}/antigen"
+  curl -L git.io/antigen >"${XDG_CONFIG_HOME}/antigen/antigen.zsh"
+
+  create_symlink "zsh/zshrc" "${HOME}/.zshrc"
+  create_symlink "zsh/zshenv" "${HOME}/.zshenv"
+  create_symlink "zsh/zsh" "${HOME}/.zsh"
+
+  echo "run 'chsh -s /bin/zsh' to change default shell to zsh"
+}
+
+install_git() {
+  if ! command -v git --version &>/dev/null; then
+    pkgx install git
+  fi
+
+  mkdir -p "${XDG_CONFIG_HOME}/git"
+  create_symlink "git/config" "${XDG_CONFIG_HOME}/git/config"
+}
+
+install_i3() {
+  mkdir -p "${XDG_CONFIG_HOME}/i3"
+
+  create_symlink "i3/config" "${XDG_CONFIG_HOME}/i3/config"
+  create_symlink "gchrome" "${LOCAL_BIN}/gchrome"
+  create_symlink "i3-display-swap.sh" "${LOCAL_BIN}/i3-display-swap.sh"
 }
 
 main() {
@@ -78,16 +131,16 @@ main() {
       install_all=true
       shift
       ;;
-    --gitconfig)
-      install_specific+=("gitconfig")
-      shift
-      ;;
-    --zshrc)
-      install_specific+=("zshrc")
-      shift
-      ;;
     --tmux)
       install_specific+=("tmux")
+      shift
+      ;;
+    --zsh)
+      install_specific+=("zsh")
+      shift
+      ;;
+    --git)
+      install_specific+=("git")
       shift
       ;;
     *)
@@ -103,20 +156,16 @@ main() {
 
   # Install all dotfiles if --all is specified
   if [ "$install_all" = true ]; then
-    install_bashrc
-    install_vimrc
-    install_gitconfig
-    install_zshrc
-    install_tmux_conf
+    install_tmux
+    install_zsh
+    install_git
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
       case "$section" in
-      bashrc) install_bashrc ;;
-      vimrc) install_vimrc ;;
-      gitconfig) install_gitconfig ;;
-      zshrc) install_zshrc ;;
       tmux) install_tmux ;;
+      zsh) install_zshrc ;;
+      git) install_gitconfig ;;
       esac
     done
   fi
