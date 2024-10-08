@@ -65,9 +65,13 @@ install_tools() {
   pkgx install bat
   pkgx install fd
   pkgx install eza
+  pkgx install dust
+  pkgx install htop
 
   pkgx install cmake
   pkgx install shellcheck
+  pkgx install cargo
+  pkgx install podman
 }
 
 install_tmux() {
@@ -115,6 +119,14 @@ install_i3() {
   create_symlink "i3-display-swap.sh" "${LOCAL_BIN}/i3-display-swap.sh"
 }
 
+install_neovim() {
+  if ! command -v nvim --version &>/dev/null; then
+    pkgx install neovim
+  fi
+
+  create_symblink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
+}
+
 main() {
   # Parse arguments
   if [ "$#" -eq 0 ]; then
@@ -143,6 +155,14 @@ main() {
       install_specific+=("git")
       shift
       ;;
+    --i3)
+      install_specific+=("i3")
+      shift
+      ;;
+    --neovim)
+      install_specific+=("neovim")
+      shift
+      ;;
     *)
       echo "Unknown option: $1"
       usage
@@ -159,6 +179,8 @@ main() {
     install_tmux
     install_zsh
     install_git
+    install_i3
+    install_neovim
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
@@ -166,6 +188,8 @@ main() {
       tmux) install_tmux ;;
       zsh) install_zshrc ;;
       git) install_gitconfig ;;
+      i3) install_i3 ;;
+      neoivm) install_neovim ;;
       esac
     done
   fi
