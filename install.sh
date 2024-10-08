@@ -127,6 +127,33 @@ install_neovim() {
   create_symblink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
 }
 
+install_fonts() {
+  local font_dir="${HOME}/.local/share/fonts"
+  mkdir -p "${font_dir}"
+
+  # List of font names to download and extract
+  fonts=(
+    "JetBrainsMono"
+    "FiraCode"
+    "FiraMono"
+    "Hack"
+    "RobotoMono"
+    "SourceCodePro"
+    "SpaceMono"
+  )
+
+  # Loop through each font and download + extract it
+  for font in "${fonts[@]}"; do
+    echo "Downloading and extracting $font..."
+    curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font}.tar.xz" | tar -xJf - -C "${font_dir}"
+  done
+
+  fc-cache -f -v
+
+  # XModmap
+  create_symlink "Xmodmap" "${HOME}/.Xmodmap"
+}
+
 main() {
   # Parse arguments
   if [ "$#" -eq 0 ]; then
@@ -163,6 +190,11 @@ main() {
       install_specific+=("neovim")
       shift
       ;;
+      
+    --fonts)
+      install_specific+=("fonts")
+      shift
+      ;;
     *)
       echo "Unknown option: $1"
       usage
@@ -181,6 +213,7 @@ main() {
     install_git
     install_i3
     install_neovim
+    install_fonts
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
@@ -190,6 +223,7 @@ main() {
       git) install_gitconfig ;;
       i3) install_i3 ;;
       neoivm) install_neovim ;;
+      fonts) install_fonts ;;
       esac
     done
   fi
