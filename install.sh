@@ -11,7 +11,7 @@ usage() {
   echo "Options:"
   echo "  --all               Install all dotfiles"
   echo "  --zshrc             Install .zshrc"
-  echo "  --tmux_conf         Install .tmux.conf"
+  echo "  --tmux              Install .tmux.conf"
   echo
 }
 
@@ -81,7 +81,7 @@ install_tmux() {
     pkgx install tmux
   fi
 
-  create_symlink "tmux/tmux_conf" "${tmux_conf_dir}/tmux.conf"
+  create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   mkdir -p "${tmux_conf_dir}/plugins"
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
 }
@@ -124,7 +124,7 @@ install_neovim() {
     pkgx install neovim
   fi
 
-  create_symblink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
+  create_symlink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
 }
 
 install_fonts() {
