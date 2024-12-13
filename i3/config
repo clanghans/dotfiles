@@ -17,7 +17,7 @@ font pango:monospace 8
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+# font pango:DejaVu Sans Mono 8
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -26,32 +26,28 @@ font pango:monospace 8
 # screen before suspend. Use loginctl lock-session to lock your screen.
 # exec --no-startup-id xss-lock --transfer-sleep-lock -- lock-dracula
 
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
-
 # gnome keyring unlock helper
-exec 'dbus-update-activation-environment --all'
+# exec --no-startup-id dbus-update-activation-environment --all
 
 # Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+# set $refresh_i3status killall -SIGUSR1 i3status
+# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+# bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+# bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+# floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec "/home/chris/.config/cargo/bin/alacritty"
+bindsym $mod+Return exec "/home/chris/.local/bin/alacritty"
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -show run,window"
-bindcode $mod+40 exec "rofi -show combi"
+bindcode $mod+40 exec --no-startup-id "/home/chris/.local/bin/rofi-launcher"
 
 # change focus
 bindsym $mod+h focus left
@@ -103,7 +99,7 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
-bindsym $mod+Shift+s exec i3-display-swap.sh
+# bindsym $mod+Shift+s exec i3-display-swap.sh
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -150,31 +146,31 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
-mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
-}
-
-bindsym $mod+r mode "resize"
+# mode "resize" {
+#         # These bindings trigger as soon as you enter the resize mode
+#
+#         # Pressing left will shrink the window’s width.
+#         # Pressing right will grow the window’s width.
+#         # Pressing up will shrink the window’s height.
+#         # Pressing down will grow the window’s height.
+#         bindsym h resize shrink width 10 px or 10 ppt
+#         bindsym j resize grow height 10 px or 10 ppt
+#         bindsym k resize shrink height 10 px or 10 ppt
+#         bindsym l resize grow width 10 px or 10 ppt
+#
+#         # same bindings, but for the arrow keys
+#         bindsym Left resize shrink width 10 px or 10 ppt
+#         bindsym Down resize grow height 10 px or 10 ppt
+#         bindsym Up resize shrink height 10 px or 10 ppt
+#         bindsym Right resize grow width 10 px or 10 ppt
+#
+#         # back to normal: Enter or Escape or $mod+r
+#         bindsym Return mode "default"
+#         bindsym Escape mode "default"
+#         bindsym $mod+r mode "default"
+# }
+#
+# bindsym $mod+r mode "resize"
 
 # DRACULA Theme
 # class                 border  bground text    indicator child_border
@@ -185,45 +181,51 @@ client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
 client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
 client.background       #F8F8F2
 
-
 bar {
-  status_command i3status
-  position top
-  font pango:DejaVu Sans Mono 10
+  colors {
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
+  }
 }
 
-set $left_screen  HDMI-1
-set $right_screen  DP-2
+# set $left_screen  HDMI-1
+# set $right_screen  DP-2
 
-workspace 1 output $left_screen
-workspace 2 output $right_screen
-workspace 3 output $left_screen
-workspace 4 output $right_screen
-workspace 5 output $left_screen
-workspace 6 output $right_screen
-workspace 7 output $left_screen
-workspace 8 output $right_screen
-workspace 9 output $left_screen
-workspace 10 output $right_screen
+# workspace 1 output $left_screen
+# workspace 2 output $right_screen
+# workspace 3 output $left_screen
+# workspace 4 output $right_screen
+# workspace 5 output $left_screen
+# workspace 6 output $right_screen
+# workspace 7 output $left_screen
+# workspace 8 output $right_screen
+# workspace 9 output $left_screen
+# workspace 10 output $right_screen
 
 #
 # run xprop on the window to get class/instance name
-assign [instance="Alacritty"] 1
-assign [class="Emacs"] 2
-assign [instance="google-chrome"] 3
-assign [instance="phind.com"] 5
-assign [instance="chat.openai.com"] 6
-assign [instance="mail.google.com"] 7
-assign [class="thunderbird-default"] 8
-assign [class="KeePassXC"] 10
+# assign [instance="Alacritty"] 1
+# assign [class="Emacs"] 2
+# assign [instance="chromium"] 3
+# assign [instance="phind.com"] 5
+# assign [instance="chat.openai.com"] 6
+# assign [instance="mail.google.com"] 7
+# assign [class="thunderbird-default"] 8
+# assign [class="KeePassXC"] 10
 
-# exec --no-startup-id i3-msg 'exec sleep 1; emacsclient --create-frame --alternate-editor=""'
-exec --no-startup-id i3-msg 'exec /home/chris/.config/cargo/bin/alacritty'
-exec --no-startup-id i3-msg 'exec gchrome'
-exec --no-startup-id i3-msg 'exec gchrome phind'
-exec --no-startup-id i3-msg 'exec gchrome gmail'
-exec --no-startup-id i3-msg 'exec gchrome chatgpt'
-exec --no-startup-id i3-msg 'exec thunderbird'
-exec --no-startup-id i3-msg 'exec keepassxc'
+# exec --no-startup-id i3-msg 'exec /home/chris/.local/bin/alacritty'
+# exec --no-startup-id i3-msg 'exec gchrome'
+# exec --no-startup-id i3-msg 'exec gchrome phind'
+# exec --no-startup-id i3-msg 'exec gchrome gmail'
+# exec --no-startup-id i3-msg 'exec gchrome chatgpt'
+# exec --no-startup-id i3-msg 'exec thunderbird'
+# exec --no-startup-id i3-msg 'exec keepassxc'
 
-exec --no-startup-id autorandr --change --default single
+# exec --no-startup-id autorandr --change --default single

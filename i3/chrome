@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+main() {
+  local ARGS=""
+  local LAUNCH="chromium"
+
+  # start chromium in different flavors
+  case $# in
+  0)
+    ARGS="--password-store=gnome"
+    ;;
+
+  1)
+    case $1 in
+    "phind")
+      ARGS="--app=https://phind.com"
+      ;;
+
+    "gmail")
+      ARGS="--app=https://mail.google.com/"
+      ;;
+
+    "chatgpt")
+      ARGS="--app=https://chat.openai.com/"
+      ;;
+
+    *)
+      if [ -f "$1" ]; then
+        ARGS="${1}"
+      else
+        echo "not a valid file"
+        exit 1
+      fi
+      ;;
+    esac
+    ;;
+
+  *)
+    echo "Invalid number of arguments"
+    exit 1
+    ;;
+  esac
+
+  exec ${LAUNCH} ${ARGS}
+}
+
+main $*

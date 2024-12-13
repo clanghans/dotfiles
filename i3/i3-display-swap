@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-set -x
+#!/usr/bin/env bash
 
 # requires jq
 JQ=$(command -v jq)
