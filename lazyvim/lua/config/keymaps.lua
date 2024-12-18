@@ -7,6 +7,7 @@ vim.keymap.del({ "i", "x", "n", "s" }, "<C-s>")
 
 -- no tabs
 vim.keymap.del("n", "<leader><tab>l")
+vim.keymap.del("n", "<leader><tab>o")
 vim.keymap.del("n", "<leader><tab>f")
 vim.keymap.del("n", "<leader><tab><tab>")
 vim.keymap.del("n", "<leader><tab>]")
