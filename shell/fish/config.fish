@@ -86,3 +86,9 @@ set -g fish_greeting
 # neofetch
 # end
 
+
+# configure fzf.fish
+## Ctrl-t to search files/directoires
+fzf_configure_bindings --directory=\ct
+## Ctrl-o during search opens EDITOR
+set fzf_directory_opts --bind "ctrl-o:execute($EDITOR {} &> /dev/tty)"
