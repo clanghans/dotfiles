@@ -9,9 +9,14 @@ usage() {
   echo "Install dotfiles by linking them to files in the current directory."
   echo
   echo "Options:"
-  echo "  --all               Install all dotfiles"
-  echo "  --zshrc             Install .zshrc"
-  echo "  --tmux              Install .tmux.conf"
+  echo "  --all              Install all dotfiles"
+  echo "  --shell            Install shell"
+  echo "  --zshrc            Install .zshrc"
+  echo "  --gitconfig        Install .gitconfig"
+  echo "  --i3               Install i3 config"
+  echo "  --fonts            Install fonts"
+  echo "  --tmux             Install .tmux.conf"
+  echo "  --alacritty        Install alacritty config"
   echo
 }
 
@@ -47,6 +52,18 @@ git_clone_or_update() {
   else
     echo "Cloning repository into $2..."
     git clone -q "$1" "$2"
+  fi
+}
+
+check_prerequisits() {
+  if ! command -v curl --version &>/dev/null; then
+    echo "curl not available"
+    exit 1
+  fi
+
+  if ! command -v git --version &>/dev/null; then
+    echo "git not available"
+    exit 1
   fi
 }
 
@@ -86,6 +103,31 @@ install_tmux() {
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
 }
 
+install_shell() {
+  if ! command -v fish -v &>/dev/null; then
+    echo "fish shell not available -> apt install fish"
+
+  else
+    fish -c "
+if not functions -q fisher
+    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+end
+fisher install IlanCosman/tide@v6
+fisher install kidonng/zoxide.fish
+fisher install PatrickF1/fzf.fish
+"
+  fi
+
+  ./shell/xdg_setup
+
+  create_symlink "shell/fish/config.fish" "${XDG_CONFIG_HOME}/fish/config.fish"
+
+  for source_file in shell/fish/functions/*; do
+    target_file="${XDG_CONFIG_HOME}/fish/functions/$(basename "$source_file")"
+    create_symlink "$source_file" "$target_file"
+  done
+}
+
 install_zsh() {
   if ! command -v zsh --version &>/dev/null; then
     pkgx install zsh
@@ -115,8 +157,18 @@ install_i3() {
   mkdir -p "${XDG_CONFIG_HOME}/i3"
 
   create_symlink "i3/config" "${XDG_CONFIG_HOME}/i3/config"
-  create_symlink "gchrome" "${LOCAL_BIN}/gchrome"
-  create_symlink "i3-display-swap.sh" "${LOCAL_BIN}/i3-display-swap.sh"
+  create_symlink "i3/chrome" "${LOCAL_BIN}/chrome"
+  create_symlink "i3/i3-display-swap.sh" "${LOCAL_BIN}/i3-display-swap.sh"
+
+  # rofi
+  mkdir -p "${XDG_CONFIG_HOME}/rofi"
+  create_symlink "i3/rofi-launcher" "${LOCAL_BIN}/rofi-launcher"
+  create_symlink "i3/rofi.config" "${XDG_CONFIG_HOME}/rofi/config.rasi"
+
+  # polybar
+  mkdir -p "${XDG_CONFIG_HOME}/polybar"
+  create_symlink "i3/polybar.config" "${XDG_CONFIG_HOME}/polybar/config.ini"
+  create_symlink "i3/polybar-launcher" "${LOCAL_BIN}/polybar-launcher"
 }
 
 install_neovim() {
@@ -154,6 +206,14 @@ install_fonts() {
   create_symlink "Xmodmap" "${HOME}/.Xmodmap"
 }
 
+install_alacritty() {
+
+  pkgx install alacritty
+
+  mkdir -p "${XDG_CONFIG_HOME}/alacritty"
+  create_symlink "alacritty/alacritty.toml" "${XDG_CONFIG_HOME}/alacritty/alacritty.toml"
+}
+
 main() {
   # Parse arguments
   if [ "$#" -eq 0 ]; then
@@ -174,6 +234,10 @@ main() {
       install_specific+=("tmux")
       shift
       ;;
+    --shell)
+      install_specific+=("shell")
+      shift
+      ;;
     --zsh)
       install_specific+=("zsh")
       shift
@@ -190,9 +254,13 @@ main() {
       install_specific+=("neovim")
       shift
       ;;
-      
+
     --fonts)
       install_specific+=("fonts")
+      shift
+      ;;
+    --alacritty)
+      install_specific+=("alacritty")
       shift
       ;;
     *)
@@ -203,6 +271,8 @@ main() {
     esac
   done
 
+  check_prerequisits
+
   # prepare
   install_pkgx
 
@@ -210,20 +280,24 @@ main() {
   if [ "$install_all" = true ]; then
     install_tmux
     install_zsh
+    install_shell
     install_git
     install_i3
     install_neovim
     install_fonts
+    install_alacritty
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
       case "$section" in
       tmux) install_tmux ;;
       zsh) install_zshrc ;;
+      shell) install_shell ;;
       git) install_gitconfig ;;
       i3) install_i3 ;;
-      neoivm) install_neovim ;;
+      neovim) install_neovim ;;
       fonts) install_fonts ;;
+      alacritty) install_alacritty ;;
       esac
     done
   fi
