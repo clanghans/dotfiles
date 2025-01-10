@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+main() {
+  local bashrc_file
+  bashrc_file="$HOME/.bashrc"
+
+  local headline
+  headline="# XDG Setup - Added by Script"
+
+  local snippet
+  snippet='
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_STATE_HOME=$HOME/.local/state
+# PATH additions
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+# End of XDG Setup'
+
+  if ! grep -Fxq "${headline}" "$bashrc_file"; then
+    echo "XDG setup added to ${bashrc_file}"
+    echo -n "${headline}" >>"${bashrc_file}"
+    echo "${snippet}" >>"${bashrc_file}"
+  fi
+}
+
+main "$@"
