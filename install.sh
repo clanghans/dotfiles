@@ -115,7 +115,9 @@ end
 fisher install IlanCosman/tide@v6
 fisher install kidonng/zoxide.fish
 fisher install PatrickF1/fzf.fish
-"
+
+tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Disconnected --prompt_spacing=Compact --icons='Many icons' --transient=Yes
+
   fi
 
   ./shell/xdg_setup
