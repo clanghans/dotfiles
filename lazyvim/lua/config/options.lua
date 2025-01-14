@@ -15,12 +15,12 @@ vim.opt.undolevels = 10000
 
 -- make zsh files recognized as sh for bash-ls & treesitter
 -- credits: https://nanotipsforvim.prose.sh/treesitter-and-lsp-support-for-zsh
-local zsh_extension = {  zsh = "sh", sh = "sh" }
+local zsh_extension = { zsh = "sh", sh = "sh" }
 vim.filetype.add(zsh_extension)
 
 local zsh_files = { ".zshrc", ".zshenv", "zshrc", "zshenv" }
 for _, filename in ipairs(zsh_files) do
-  vim.filetype.add({filename= {[filename] = "sh"}})
+  vim.filetype.add({ filename = { [filename] = "sh" } })
 end
 
 -- LSP Server to use for Python.
@@ -28,3 +28,6 @@ end
 vim.g.lazyvim_python_lsp = "pyright"
 -- Set to "ruff_lsp" to use the old LSP implementation version.
 vim.g.lazyvim_python_ruff = "ruff"
+
+-- disable anmiations globally
+vim.g.snacks_animate = false
