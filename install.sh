@@ -17,6 +17,7 @@ usage() {
   echo "  --fonts            Install fonts"
   echo "  --tmux             Install .tmux.conf"
   echo "  --alacritty        Install alacritty config"
+  echo "  --nix              Install nix config"
   echo
 }
 
@@ -67,28 +68,36 @@ check_prerequisits() {
   fi
 }
 
-install_pkgx() {
-  if ! command -v pkgx --version &>/dev/null; then
-    curl -fsS https://pkgx.sh | sh
+# install_pkgx() {
+#   if ! command -v pkgx --version &>/dev/null; then
+#     curl -fsS https://pkgx.sh | sh
+#   fi
+#
+#   export PATH="$HOME/.local/bin:$PATH"
+# }
+
+install_nix() {
+  # pkgx install jq
+  # pkgx install fzf
+  # pkgx install ripgrep
+  # pkgx install bat
+  # pkgx install fd
+  # pkgx install eza
+  # pkgx install dust
+  # pkgx install htop
+  #
+  # pkgx install cmake
+  # pkgx install shellcheck
+  # pkgx install cargo
+  # pkgx install podman
+  #
+
+  if ! command -v nix --version &>/dev/null; then
+    curl -L https://nixos.org/nix/install | sh
   fi
 
-  export PATH="$HOME/.local/bin:$PATH"
-}
-
-install_tools() {
-  pkgx install jq
-  pkgx install fzf
-  pkgx install ripgrep
-  pkgx install bat
-  pkgx install fd
-  pkgx install eza
-  pkgx install dust
-  pkgx install htop
-
-  pkgx install cmake
-  pkgx install shellcheck
-  pkgx install cargo
-  pkgx install podman
+  local nix_conf_dir="${XDG_CONFIG_HOME}/nix"
+  create_symlink "nix/nix.conf" "${nix_conf_dir}/nix.conf"
 }
 
 install_tmux() {
@@ -98,8 +107,8 @@ install_tmux() {
     pkgx install tmux
   fi
 
-  create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   mkdir -p "${tmux_conf_dir}/plugins"
+  create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
 }
 
@@ -117,7 +126,7 @@ fisher install kidonng/zoxide.fish
 fisher install PatrickF1/fzf.fish
 
 tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Disconnected --prompt_spacing=Compact --icons='Many icons' --transient=Yes
-
+"
   fi
 
   ./shell/xdg_setup
@@ -131,9 +140,10 @@ tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No -
 }
 
 install_zsh() {
-  if ! command -v zsh --version &>/dev/null; then
-    pkgx install zsh
-  fi
+  # if ! command -v zsh --version &>/dev/null; then
+  # TODO install zsh
+  # pkgx install zsh
+  # fi
 
   # install antigen
   mkdir -p "${XDG_CONFIG_HOME}/antigen"
@@ -265,8 +275,12 @@ main() {
       install_specific+=("alacritty")
       shift
       ;;
+    --nix)
+      install_specific+=("nix")
+      shift
+      ;;
     *)
-      echo "Unknown option: $1"
+      echo "Unknown option: ${1}"
       usage
       exit 1
       ;;
@@ -276,7 +290,7 @@ main() {
   check_prerequisits
 
   # prepare
-  install_pkgx
+  # install_pkgx
 
   # Install all dotfiles if --all is specified
   if [ "$install_all" = true ]; then
@@ -288,18 +302,20 @@ main() {
     install_neovim
     install_fonts
     install_alacritty
+    install_nix
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
       case "$section" in
       tmux) install_tmux ;;
-      zsh) install_zshrc ;;
+      zsh) install_zsh ;;
       shell) install_shell ;;
       git) install_gitconfig ;;
       i3) install_i3 ;;
       neovim) install_neovim ;;
       fonts) install_fonts ;;
       alacritty) install_alacritty ;;
+      nix) install_nix ;;
       esac
     done
   fi
