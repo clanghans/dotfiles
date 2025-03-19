@@ -53,14 +53,5 @@ for file in "${config_dir}"/*.zsh; do
 	fi
 done
 
-# [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
-
-# pnpm
-export PNPM_HOME="/home/chris/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-source <(pkgx --shellcode)  #docs.pkgx.sh/shellcode
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
