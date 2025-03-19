@@ -97,6 +97,7 @@ install_nix() {
   fi
 
   local nix_conf_dir="${XDG_CONFIG_HOME}/nix"
+  mkdir -p "${nix_conf_dir}/"
   create_symlink "nix/nix.conf" "${nix_conf_dir}/nix.conf"
 }
 
