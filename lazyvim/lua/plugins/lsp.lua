@@ -63,7 +63,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-      ensure_installed = "all",
+      ensure_installed = { "all" },
     },
   },
   -- {
@@ -72,7 +72,7 @@ return {
   --   enabled = false,
   -- },
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       local ensure_installed = {
         -- python
