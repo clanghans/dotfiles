@@ -8,10 +8,22 @@ return {
       "ibhagwan/fzf-lua", -- optional
     },
     config = true,
-    lazy = false,
+    lazy = true,
     keys = {
-      { "<leader>gg", "<cmd>Neogit<cr>", "Neogit" },
-      { "<leader>gG", "<cmd>Neogit cwd=getcwd()<cr>", "Neogit" },
+      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Neogit" },
+      { "<leader>gG", "<cmd>Neogit cwd=getcwd()<cr>", desc = "Neogit" },
+    },
+  },
+
+  {
+    "nvim-mini/mini-git",
+    version = false,
+    main = "mini.git",
+    lazy = true,
+    config = true,
+    keys = {
+
+      { "<leader>ga", "<cmd>Git add %<cr>", desc = "Git add current file" },
     },
   },
 }
