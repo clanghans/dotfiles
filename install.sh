@@ -18,6 +18,7 @@ usage() {
   echo "  --tmux             Install .tmux.conf"
   echo "  --alacritty        Install alacritty config"
   echo "  --nix              Install nix config"
+  echo "  --hyprland         Install hyprland config"
   echo
 }
 
@@ -34,7 +35,7 @@ create_symlink() {
     echo "Symlink for $source_file already exists, skipping."
   else
     # Backup existing file if necessary
-    if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
+    if [ -e "$target_file" ] && [ ! -L "$target_file" ]; then
       echo "Backing up existing $target_file to $target_file.bak"
       mv "$target_file" "$target_file.bak"
     fi
@@ -221,10 +222,14 @@ install_fonts() {
 
 install_alacritty() {
 
-  pkgx install alacritty
+  # pkgx install alacritty
 
   mkdir -p "${XDG_CONFIG_HOME}/alacritty"
   create_symlink "alacritty/alacritty.toml" "${XDG_CONFIG_HOME}/alacritty/alacritty.toml"
+}
+
+install_hyprland() {
+  create_symlink "hyprland" "${XDG_CONFIG_HOME}/hypr"
 }
 
 main() {
@@ -280,6 +285,10 @@ main() {
       install_specific+=("nix")
       shift
       ;;
+    --hyprland)
+      install_specific+=("hyprland")
+      shift
+      ;;
     *)
       echo "Unknown option: ${1}"
       usage
@@ -304,6 +313,7 @@ main() {
     install_fonts
     install_alacritty
     install_nix
+    install_hyprland
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
@@ -317,6 +327,7 @@ main() {
       fonts) install_fonts ;;
       alacritty) install_alacritty ;;
       nix) install_nix ;;
+      hyprland) install_hyprland ;;
       esac
     done
   fi

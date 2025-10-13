@@ -1,11 +1,7 @@
-# load redo functions
-source "$(redo alias-file)"
-
 # reload zsh/shell configuration
 function reload() {
 	source ~/.zshrc
 	source ~/.zshenv
-	source "$(redo alias-file)"
 }
 
 # create directory [if necessary] and jump into it

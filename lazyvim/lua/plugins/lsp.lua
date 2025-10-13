@@ -63,7 +63,35 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-      ensure_installed = { "all" },
+      ensure_installed = {
+        "bash",
+        "c",
+        "cmake",
+        "cpp",
+        "css",
+        "csv",
+        "dockerfile",
+        "git_config",
+        "go",
+        "html",
+        "javascript",
+        "jq",
+        "json",
+        "latex",
+        "lua",
+        "make",
+        "markdown",
+        "python",
+        "rust",
+        "starlark",
+        "tmux",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "xml",
+        "yaml"
+      },
     },
   },
   -- {
@@ -77,19 +105,19 @@ return {
       local ensure_installed = {
         -- python
         "ruff-lsp", -- lsp
-        "ruff", -- linter (but used as formatter)
-        "pyright", -- lsp
-        "black", -- formatter
-        "mypy", -- linter
+        "ruff",     -- linter (but used as formatter)
+        "pyright",  -- lsp
+        "black",    -- formatter
+        "mypy",     -- linter
 
         -- lua
         "lua-language-server", -- lsp
-        "stylua", -- formatter
+        "stylua",              -- formatter
 
         -- shell
         "bash-language-server", -- lsp
-        "shfmt", -- formatter
-        "shellcheck", -- linter
+        "shfmt",                -- formatter
+        "shellcheck",           -- linter
 
         -- yaml
         "yamllint", -- linter
