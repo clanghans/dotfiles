@@ -19,3 +19,17 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   pattern = "dart",
 })
+
+vim.api.nvim_create_autocmd({ "VimEnter", "VimLeave" }, {
+  callback = function()
+    if vim.env.TMUX_PLUGIN_MANAGER_PATH then
+      vim.uv.spawn(
+        vim.env.TMUX_PLUGIN_MANAGER_PATH .. "/tmux-window-name/scripts/rename_session_windows.py",
+        {},
+        function(code, signal)
+          print("Process exited with code", code, "and signal", signal)
+        end
+      )
+    end
+  end,
+})
