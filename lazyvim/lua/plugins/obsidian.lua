@@ -2,7 +2,7 @@ return {
   {
     "epwalsh/obsidian.nvim",
     version = "*", -- use latest release instead of latest commit
-    lazy = true,
+    lazy = false,
     ft = "markdown",
     dependencies = {
       -- Required.

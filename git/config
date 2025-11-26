@@ -1,14 +1,20 @@
 # Put this in your ~/.gitconfig or ~/.config/git/config
 [user]
 	name = Chris Langhans
-	email = lcn2abt@de.bosch.com
+	email = chris@langhans.dev 
 
 [init]
 	defaultBranch = main
 
 [credential]
 	helper = store
-
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+  
 [alias]
 	lg = log --graph --date=relative --pretty=tformat:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset'
 
@@ -53,11 +59,6 @@
 	# Auto-accept file prompts when launching merge tools
 	prompt = false
 [pull]
-	# This is GREAT… when you know what you're doing and are careful
-	# not to pull --no-rebase over a local line containing a true merge.
-	# rebase = true
-	# WARNING! This option, which does away with the one gotcha of
-	# auto-rebasing on pulls, is only available from 1.8.5 onwards.
 	rebase = true
 [rebase]
   autostash = true

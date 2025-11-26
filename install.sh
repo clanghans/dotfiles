@@ -321,7 +321,7 @@ main() {
       tmux) install_tmux ;;
       zsh) install_zsh ;;
       shell) install_shell ;;
-      git) install_gitconfig ;;
+      git) install_git ;;
       i3) install_i3 ;;
       neovim) install_neovim ;;
       fonts) install_fonts ;;
