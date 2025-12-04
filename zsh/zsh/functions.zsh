@@ -180,7 +180,7 @@ function batdiff() {
 # calc hashsums of the most common hashalgorithms
 function hashsum() {
   for file in "$@"; do
-    if [ -f $file ]; then
+    if [ -f "$file" ]; then
       echo "$file"
       echo "MD5: $(md5sum "$file")"
       echo "SHA1: $(sha1sum "$file")"
