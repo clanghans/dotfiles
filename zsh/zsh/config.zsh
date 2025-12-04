@@ -1,6 +1,6 @@
 # new keyboard mappings
 if [ -f "$HOME/.Xmodmap" ]; then
-   xmodmap "$HOME/.Xmodmap"
+  xmodmap "$HOME/.Xmodmap"
 fi
 
 # FZF config
@@ -45,5 +45,5 @@ setopt NONOMATCH
 
 # configure pyenv
 if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
+  eval "$(pyenv init -)"
 fi

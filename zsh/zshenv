@@ -34,9 +34,9 @@ export FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore --exclude ".git"
 
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
-  --preview 'bat -n --color=always {}'
-  --height=80%
-  --bind 'ctrl-/:change-preview-window(down|hidden|),ctrl-j:preview-down,ctrl-k:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up'"
+--preview 'bat -n --color=always {}'
+--height=80%
+--bind 'ctrl-/:change-preview-window(down|hidden|),ctrl-j:preview-down,ctrl-k:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up'"
 
 # prevent pip clutter the global environment
 export PIP_REQUIRE_VIRTUALENV=true
