@@ -46,11 +46,11 @@ antigen apply
 
 config_dir="${HOME}/.zsh"
 for file in "${config_dir}"/*.zsh; do
-	# Check if the file exists to avoid trying to source non-existent files
-	# which can happen in bash if there are no .zsh files in the directory.
-	if [[ -f "$file" ]]; then
-		source "$file"
-	fi
+  # Check if the file exists to avoid trying to source non-existent files
+  # which can happen in bash if there are no .zsh files in the directory.
+  if [[ -f "$file" ]]; then
+    source "$file"
+  fi
 done
 
 # Set up fzf key bindings and fuzzy completion
