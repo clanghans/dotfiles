@@ -1,0 +1,8 @@
+---
+pre-commit:
+  parallel: true
+  jobs:
+    - name: secrets-scanning
+      tags:
+        - security
+      run: gitleaks git --pre-commit --staged --no-banner

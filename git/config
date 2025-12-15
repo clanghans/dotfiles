@@ -24,7 +24,6 @@
 
 	# Don't consider trailing space change as a cause for merge conflicts
 	whitespace = -trailing-space
-	hooksPath = /home/lcn2abt/.git-hooks
 
 [diff]
 	# Use better, descriptive initials (c, i, w) instead of a/b.
