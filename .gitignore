@@ -1,0 +1,55 @@
+# =========================
+# Backup & temporary files
+# =========================
+
+*.bak
+*.bak.*
+*~
+*.swp
+*.swo
+*.tmp
+
+# Timestamped config backups
+*.conf.bak.*
+*.conf.old.*
+*.conf.save.*
+
+# =========================
+# Editor / IDE noise
+# =========================
+
+.vscode/
+.idea/
+.nvim/
+*.session
+
+# =========================
+# OS junk
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs & caches
+# =========================
+
+*.log
+.cache/
+.cache/**
+
+# =========================
+# Hyprland generated content
+# =========================
+
+hyprland/shaders/
+hyprland/logs/
+hyprland/.cache/
+hyprland/.runtime/
+
+# =========================
+# Script/runtime leftovers
+# =========================
+
+*.pid
+*.lock
