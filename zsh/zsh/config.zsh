@@ -42,8 +42,3 @@ setopt CHASE_LINKS # resolve symbolic links
 setopt COMPLETE_ALIASES
 setopt GLOB_COMPLETE
 setopt NONOMATCH
-
-# configure pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
