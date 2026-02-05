@@ -11,7 +11,7 @@ source ~/.config/antigen/antigen.zsh
 antigen use oh-my-zsh
 
 # ZSH_TMUX_AUTOSTART="true"
-ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
+ZSH_TMUX_CONFIG="${HOME}/.config/tmux/tmux.conf"
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 # antigen bundle command-not-found
@@ -26,6 +26,7 @@ antigen bundle python
 antigen bundle ripgrep
 antigen bundle sudo
 antigen bundle tmux
+antigen bundle sheeki03/ohmyzsh-tirith 
 antigen bundle zoxide
 
 # antigen bundle virtualenvwrapper
