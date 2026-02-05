@@ -1,8 +1,4 @@
-# reload zsh/shell configuration
-function reload() {
-  source ~/.zshrc
-  source ~/.zshenv
-}
+#?/usr/bin/sh
 
 # create directory [if necessary] and jump into it
 function mcd() {
@@ -21,34 +17,6 @@ function w() {
 
 function nvim_open_file() {
   nvim "$@"
-}
-
-function stow_package() {
-  local package_name="$1"
-
-  if [[ $# -ne 1 ]]; then
-    echo "You need to specify exactly one package name."
-    return 1
-  elif [[ ! -d "${STOW_SRC_DIR}/${package_name}" ]]; then
-    echo "No package with name ${package_name} found."
-    return 1
-  fi
-
-  stow -d "${STOW_SRC_DIR}" -S "${package_name}"
-}
-
-function unstow_package() {
-  local package_name="$1"
-
-  if [[ $# -ne 1 ]]; then
-    echo "You need to specify exactly one package name."
-    return 1
-  elif [[ ! -d "${STOW_SRC_DIR}/${package_name}" ]]; then
-    echo "No package with name ${package_name} found."
-    return 1
-  fi
-
-  stow -d "${STOW_SRC_DIR}" -D "${package_name}"
 }
 
 function vrun() {
@@ -86,43 +54,43 @@ function git_branch_worktree_create() {
   # Check if we are inside a git repository
   git rev-parse --is-inside-work-tree &>/dev/null || {
     echo "Not in a Git worktree"
-      return
-    }
-
-    # Use fzf to select a branch from the list (local and remote)
-    local branch
-    branch=$(git branch -a --format="%(refname:short)" | fzf --height 80% --border)
-
-    # Abort if no branch was selected
-    if [[ -z "$branch" ]]; then
-      echo "No branch selected."
-      return
-    fi
-
-    # Parse the selected branch name for the worktree add command
-    local branch_name
-    # Clean up branch name and replace slashes
-    # branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//;s/\/+/-/g')
-    branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//g')
-
-    # Use the branch name as the default worktree path
-    local worktree_path="../$branch_name" # Set default path to the branch name
-
-    # Prompt for the new worktree path, showing the default
-    read -r user_path?"Enter the path for the new worktree [$worktree_path]: "
-    worktree_path=${user_path:-$worktree_path} # Use the user provided path, or default if none provided
-
-    # Check if the directory already exists
-    if [[ -d "$worktree_path" ]]; then
-      echo "Error: Directory '$worktree_path' already exists."
-      return
-    fi
-
-    # Create a new worktree with the selected branch
-    git worktree add -b "$branch_name" "$worktree_path" "$branch" || return
-
-    cd "$worktree_path" || return
+    return
   }
+
+  # Use fzf to select a branch from the list (local and remote)
+  local branch
+  branch=$(git branch -a --format="%(refname:short)" | fzf --height 80% --border)
+
+  # Abort if no branch was selected
+  if [[ -z "$branch" ]]; then
+    echo "No branch selected."
+    return
+  fi
+
+  # Parse the selected branch name for the worktree add command
+  local branch_name
+  # Clean up branch name and replace slashes
+  # branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//;s/\/+/-/g')
+  branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//g')
+
+  # Use the branch name as the default worktree path
+  local worktree_path="../$branch_name" # Set default path to the branch name
+
+  # Prompt for the new worktree path, showing the default
+  read -r user_path?"Enter the path for the new worktree [$worktree_path]: "
+  worktree_path=${user_path:-$worktree_path} # Use the user provided path, or default if none provided
+
+  # Check if the directory already exists
+  if [[ -d "$worktree_path" ]]; then
+    echo "Error: Directory '$worktree_path' already exists."
+    return
+  fi
+
+  # Create a new worktree with the selected branch
+  git worktree add -b "$branch_name" "$worktree_path" "$branch" || return
+
+  cd "$worktree_path" || return
+}
 
 # Read secret token and store it in the environment
 function read_secret_token() {
@@ -134,7 +102,7 @@ function read_secret_token() {
   read -s secret
 
   # Export as environment variable
-  export ${SECRET_TOKEN}=${secret}
+  export "${SECRET_TOKEN}"="${secret}"
   echo "Stored secret token in environment variable ${SECRET_TOKEN}"
 }
 
@@ -202,8 +170,8 @@ pdfcompress() {
   #     $1 input file name
   #     $2 output file name
   gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen \
-    -dNOPAUSE -dQUIET -dBATCH -sOutputFile=${2} ${1}
-  }
+    -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${2}" "${1}"
+}
 
 # Extract ranged pdf pages with ghostscript
 pdfpextr() {
@@ -213,8 +181,8 @@ pdfpextr() {
   #     $3 is the input file
   #     output file will be named "inputfile_pXX-pYY.pdf"
   gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
-    -dFirstPage=${1} \
-    -dLastPage=${2} \
-    -sOutputFile=${3%.pdf}_p${1}-p${2}.pdf \
-    ${3}
-  }
+    -dFirstPage="${1}" \
+    -dLastPage="${2}" \
+    -sOutputFile="${3%.pdf}"_p"${1}"-p"${2}".pdf \
+    "${3}"
+}
