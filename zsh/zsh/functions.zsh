@@ -1,5 +1,3 @@
-#?/usr/bin/sh
-
 # create directory [if necessary] and jump into it
 function mcd() {
   if [[ "$#" -gt 1 ]]; then
@@ -18,7 +16,6 @@ function w() {
 function nvim_open_file() {
   nvim "$@"
 }
-
 function vrun() {
   local name="${1:-.venv}"
   local venvpath="${name:P}"
@@ -39,39 +36,82 @@ function vrun() {
 
 # Create a new virtual environment, with default name 'venv'.
 function mkv() {
-  local name="${1:-.venv}"
-  local venvpath="${name:P}"
+  # Define the virtual environment directory as ".venv" in the current directory
+  local venv_dir=".venv"
 
-  python3 -m venv "${name}" || return
-  echo >&2 "Created venv in '${venvpath}'"
-  vrun "${name}"
+  # Check if the .venv directory already exists
+  if [[ -d "${venv_dir}" ]]; then
+    echo "Virtual environment already exists"
+    echo "Sourcing $venv_dir/bin/activate"
+    source "${venv_dir}/bin/activate"
+    return 0
+  fi
+
+  # Check if a Python version is specified as a parameter
+  # Default to 'python3' if no parameter is provided
+  local python_version="${1:-3.12}"
+
+  # Create the virtual environment using the specified Python version
+  if uv venv "${venv_dir}" -p "${python_version}"; then
+    source "${venv_dir}/bin/activate"
+
+    # Ensure pip is installed and install necessary packages
+    python3 -m ensurepip --upgrade
+    uv pip install pynvim
+  else
+    echo "Failed to create virtual environment with Python version: ${python_version}"
+    return 1
+  fi
 }
 
 # Fuzzy searches all git branches and checkouts selected branch in new worktree.
 # Usage: search_and_checkout_branch - Prompts to select a branch, then to enter worktree path (default: sanitized branch name).
 # Requires: Git, fzf. Assumes execution within a git repository. Outputs new worktree or error message.
 function git_branch_worktree_create() {
+  # command line arguments
+  local create_branch=false
+
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+    -c | --create)
+      create_branch=true
+      ;;
+    *)
+      echo "Unknown parameter passed: $1"
+      return 1
+      ;;
+    esac
+    shift
+  done
+
   # Check if we are inside a git repository
   git rev-parse --is-inside-work-tree &>/dev/null || {
     echo "Not in a Git worktree"
     return
   }
 
-  # Use fzf to select a branch from the list (local and remote)
-  local branch
-  branch=$(git branch -a --format="%(refname:short)" | fzf --height 80% --border)
-
-  # Abort if no branch was selected
-  if [[ -z "$branch" ]]; then
-    echo "No branch selected."
-    return
-  fi
-
-  # Parse the selected branch name for the worktree add command
   local branch_name
-  # Clean up branch name and replace slashes
-  # branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//;s/\/+/-/g')
-  branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//g')
+  local branch
+
+  if [[ "$create_branch" = true ]]; then
+    # Prompt for the new branch name
+    read -r branch_name?"Enter new branch name: "
+    branch=$(git branch -a --format="%(refname:short)" | fzf --height 80% --border --prompt="Branch off from: ")
+
+  else
+    # Use fzf to select a branch from the list (local and remote)
+    branch=$(git branch -a --format="%(refname:short)" | fzf --height 80% --border --prompt="Select a branch: ")
+
+    # Abort if no branch was selected
+    if [[ -z "$branch" ]]; then
+      echo "No branch selected."
+      return
+    fi
+
+    # Clean up branch name and replace slashes
+    # branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//;s/\/+/-/g')
+    branch_name=$(echo "$branch" | sed -r 's/^.*origin\///;s/^\*?\s+//g')
+  fi
 
   # Use the branch name as the default worktree path
   local worktree_path="../$branch_name" # Set default path to the branch name
@@ -126,7 +166,7 @@ function describe() {
   # Check for function
   if declare -F "$cmd" &>/dev/null; then
     echo "$cmd is a function:"
-    declare -f "$cmd"
+    declare -f "$cmd" | bat --language=sh --plain
     return
   fi
 
@@ -148,8 +188,8 @@ function batdiff() {
 # calc hashsums of the most common hashalgorithms
 function hashsum() {
   for file in "$@"; do
-    if [ -f "$file" ]; then
-      echo "$file"
+    if [ -f "${file}" ]; then
+      echo "${file}"
       echo "MD5: $(md5sum "$file")"
       echo "SHA1: $(sha1sum "$file")"
       echo "SHA256: $(sha256sum "$file")"
