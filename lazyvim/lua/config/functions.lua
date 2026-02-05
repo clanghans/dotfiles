@@ -6,9 +6,16 @@ function remotePermalink()
   -- Calculate the length of the current line
   local line_length = string.len(vim.api.nvim_get_current_line()) + 1
 
-  -- call python script to get the permalink
-  local result = vim.fn.system("repo-remote-permalink " .. file_name .. " " .. cursor_pos[1] .. " " .. line_length)
+  -- Construct the command for the python script
+  local command = "repo_remote_permalink.sh " .. file_name .. " " .. cursor_pos[1] .. " " .. line_length
 
+  -- Debug: Print the constructed command to the message area
+  vim.notify("Executing command: " .. command, vim.log.levels.DEBUG)
+
+  -- Call the python script to get the permalink
+  local result = vim.fn.system(command)
+
+  -- Notify the result and copy it to clipboard
   vim.notify(result)
   vim.fn.setreg("+", result)
 end
