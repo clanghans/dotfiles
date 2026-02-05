@@ -6,9 +6,10 @@ if command -v conan &>/dev/null; then
   alias cep='conan export-pkg'
 fi
 
-# tree
-alias t='tree'
-alias td='tree -d'
+# bazel
+if command -v bazelisk &>/dev/null; then
+  alias bazel='bazelisk'
+fi
 
 # Conan
 if command -v conan &>/dev/null; then
@@ -25,8 +26,11 @@ alias td='tree -d'
 # Neovim
 if command -v nvim &>/dev/null; then
   # clear the terminal after closing nvim
-  alias n='nvim_open_file'
-  alias nf='nvim_open_file $(fzf)'
+  alias n='nvim'
+  # alias nf to open a file search with fzf-lua
+  alias nf='nvim -c "lua require('"'fzf-lua'"').files()"'
+  # alias ng to open neovim with a neogit buffer open
+  alias ng='nvim -c "lua require('"'neogit'"').open()"'
 fi
 
 # GIT
@@ -36,12 +40,12 @@ alias gwr='git worktree remove'
 
 # PIP
 alias gpip='global_pip'
-if command -v uv &>/dev/null; then
-  alias pip='uv pip'
-fi
-
-# UV
-alias pip='uv pip'
+# if command -v uv &>/dev/null; then
+#   alias pip='uv pip'
+# fi
+#
+# # UV
+# alias pip='uv pip'
 
 # MISC
 alias x='exit'
@@ -56,7 +60,7 @@ alias -g NUL='|& /dev/null'
 alias -g ERRNUL='2>/dev/null'
 alias -g Z='| fzf'
 
-## rg
+#proxyconnect tcp: EOF# rg
 if command -v rg &>/dev/null; then
   alias rga='rg --no-ignore --hidden --follow'
 fi
@@ -97,6 +101,10 @@ alias cd..='cd ..'
 # PODMAN
 if command -v podman &>/dev/null; then
   alias docker='podman'
+fi
+
+if command -v firefox &>/dev/null; then
+  alias ff='firefox'
 fi
 
 # personal shortcuts
