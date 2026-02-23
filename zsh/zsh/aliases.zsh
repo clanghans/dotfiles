@@ -65,8 +65,11 @@ if command -v rg &>/dev/null; then
   alias rga='rg --no-ignore --hidden --follow'
 fi
 
-## fdfind
-if command -v eza &>/dev/null; then
+## fd
+if command -v fd &>/dev/null; then
+  alias fd='fd'
+  alias fda='fd -IH'
+elif command -v fdfind &>/dev/null; then
   alias fd='fdfind'
   alias fda='fdfind -IH'
 fi
