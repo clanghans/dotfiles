@@ -17,6 +17,7 @@ usage() {
   echo "  --fonts            Install fonts"
   echo "  --tmux             Install .tmux.conf"
   echo "  --alacritty        Install alacritty config"
+  echo "  --ghostty          Install ghostty config"
   echo "  --nix              Install nix config"
   echo "  --hyprland         Install hyprland config"
   echo
@@ -186,10 +187,6 @@ install_i3() {
 }
 
 install_neovim() {
-  if ! command -v nvim --version &>/dev/null; then
-    pkgx install neovim
-  fi
-
   create_symlink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
 }
 
@@ -221,11 +218,13 @@ install_fonts() {
 }
 
 install_alacritty() {
-
-  # pkgx install alacritty
-
   mkdir -p "${XDG_CONFIG_HOME}/alacritty"
   create_symlink "alacritty/alacritty.toml" "${XDG_CONFIG_HOME}/alacritty/alacritty.toml"
+}
+
+install_ghostty() {
+  mkdir -p "${XDG_CONFIG_HOME}/ghostty"
+  create_symlink "ghostty/config" "${XDG_CONFIG_HOME}/ghostty/config"
 }
 
 install_hyprland() {
@@ -281,6 +280,10 @@ main() {
       install_specific+=("alacritty")
       shift
       ;;
+    --ghostty)
+      install_specific+=("ghostty")
+      shift
+      ;;
     --nix)
       install_specific+=("nix")
       shift
@@ -312,6 +315,7 @@ main() {
     install_neovim
     install_fonts
     install_alacritty
+    install_ghostty
     install_nix
     install_hyprland
   else
@@ -326,6 +330,7 @@ main() {
       neovim) install_neovim ;;
       fonts) install_fonts ;;
       alacritty) install_alacritty ;;
+      ghostty) install_ghostty ;;
       nix) install_nix ;;
       hyprland) install_hyprland ;;
       esac
