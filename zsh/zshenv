@@ -22,6 +22,9 @@ export VISUAL="nvim"
 export REDO_HISTORY_PATH=~/.zhistory
 export BAT_THEME="Dracula"
 
+# LS_COLORS (used by eza, fzf-tab completions)
+export LS_COLORS="$(vivid generate tokyonight-night)"
+
 # RIPGREP
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/config"
 
