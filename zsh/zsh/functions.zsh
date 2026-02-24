@@ -171,9 +171,9 @@ function describe() {
   fi
 
   # Check for binary
-  if command -v "$cmd" &>/dev/null; then
+  if (( $+commands[$cmd] )); then
     echo "$cmd is a binary located at:"
-    command -v "$cmd"
+    echo "$commands[$cmd]"
     return
   fi
 
