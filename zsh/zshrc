@@ -4,6 +4,8 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d "$ZINIT_HOME/.git" ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
+unalias zi
+
 # Tmux config (must be set before loading tmux plugin)
 ZSH_TMUX_CONFIG="${HOME}/.config/tmux/tmux.conf"
 
@@ -28,6 +30,31 @@ zinit wait lucid for \
   zsh-users/zsh-completions \
   atload"_zsh_autosuggest_start" \
   zsh-users/zsh-autosuggestions
+
+# Fast syntax highlighting (turbo mode)
+zinit wait lucid for \
+  zdharma-continuum/fast-syntax-highlighting
+
+# fzf-tab (turbo mode, must load after compinit)
+zinit wait lucid for \
+  atload"
+    # use colors for different file types
+    zstyle ':completion:*' list-colors \${(s.:.)LS_COLORS}
+    # preview directory contents
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --color=always --icons \$realpath'
+    # preview file contents
+    zstyle ':fzf-tab:complete:*:*' fzf-preview '
+      if [[ -d \$realpath ]]; then
+        eza --color=always --icons \$realpath
+      elif [[ -f \$realpath ]]; then
+        bat --color=always --style=numbers --line-range=:100 \$realpath 2>/dev/null || cat \$realpath
+      fi'
+    # switch groups with < and >
+    zstyle ':fzf-tab:*' switch-group '<' '>'
+    # set fzf-tab popup size
+    zstyle ':fzf-tab:*' fzf-min-height 20
+  " \
+  Aloxaf/fzf-tab
 
 # Pure prompt (loaded synchronously - needed for prompt)
 zinit ice pick"async.zsh" src"pure.zsh"
