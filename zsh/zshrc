@@ -6,9 +6,6 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 unalias zi
 
-# Tmux config (must be set before loading tmux plugin)
-ZSH_TMUX_CONFIG="${HOME}/.config/tmux/tmux.conf"
-
 # OMZ plugins (loaded with turbo mode for speed)
 zinit wait lucid for \
   OMZP::bazel \
@@ -17,7 +14,6 @@ zinit wait lucid for \
   OMZP::git-auto-fetch \
   OMZP::git-extras \
   OMZP::history \
-  OMZP::tmux \
   OMZP::zoxide
 
 # Third-party OMZ plugin
