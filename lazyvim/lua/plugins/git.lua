@@ -1,29 +1,23 @@
 return {
   {
-    -- dir = "~/ws/neogit",
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-      "ibhagwan/fzf-lua", -- optional
-    },
-    config = true,
-    lazy = true,
+    "tpope/vim-fugitive",
+    event = "VeryLazy",
     keys = {
-      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Neogit" },
-      { "<leader>gG", "<cmd>Neogit cwd=getcwd()<cr>", desc = "Neogit" },
+      { "<leader>gg", "<cmd>Git<cr>", desc = "Git status (Fugitive)" },
+      { "<leader>gG", "<cmd>Git<cr>", desc = "Git status (Fugitive, cwd)" },
     },
   },
 
   {
-    "nvim-mini/mini-git",
-    version = false,
-    main = "mini.git",
-    lazy = true,
-    config = true,
+    "emmanueltouzery/agitator.nvim",
     keys = {
-
-      { "<leader>ga", "<cmd>Git add %<cr>", desc = "Git add current file" },
+      {
+        "<leader>gm",
+        function()
+          require("agitator").git_time_machine()
+        end,
+        desc = "Git time machine",
+      },
     },
   },
 }

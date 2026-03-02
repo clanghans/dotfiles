@@ -5,7 +5,7 @@
 vim.opt.scrolloff = 999
 vim.g.autoformat = false
 
-vim.opt.spelllang = { "en", "de" }
+vim.opt.spelllang = { "en", "de_de" }
 
 vim.opt.clipboard = "unnamedplus"
 
