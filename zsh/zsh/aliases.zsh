@@ -91,12 +91,6 @@ alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
 alias cd..='cd ..'
 
-# zoxide
-if (( $+commands[zoxide] )); then
-  alias cd='z'
-  alias cdi='zi'
-fi
-
 # PODMAN
 if (( $+commands[podman] )); then
   alias docker='podman'
