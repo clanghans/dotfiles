@@ -1,11 +1,14 @@
 return {
   {
-    "tpope/vim-fugitive",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>gg", "<cmd>Git<cr>", desc = "Git status (Fugitive)" },
-      { "<leader>gG", "<cmd>Git<cr>", desc = "Git status (Fugitive, cwd)" },
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
     },
+    keys = {
+      { "<leader>gg", function() require("neogit").open() end, desc = "Neogit" },
+    },
+    opts = {},
   },
 
   {
