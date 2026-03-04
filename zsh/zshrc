@@ -36,6 +36,8 @@ zinit wait lucid for \
   atload"
     # use colors for different file types
     zstyle ':completion:*' list-colors \${(s.:.)LS_COLORS}
+    # case-insensitive completion
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
     # preview directory contents
     zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --color=always --icons \$realpath'
     # preview file contents
