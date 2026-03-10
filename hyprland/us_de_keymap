@@ -1,0 +1,16 @@
+xkb_keymap {
+    xkb_keycodes { include "evdev+aliases(qwerty)" };
+    xkb_types    { include "complete" };
+    xkb_compat   { include "complete" };
+    xkb_symbols  {
+        include "pc+us+inet(evdev)+compose(caps)+level3(ralt_switch)"
+
+        // German umlauts on AltGr+vowels, Euro on AltGr+e
+        key <AD03> { [ e, E, EuroSign            ] };
+        key <AD07> { [ u, U, udiaeresis, Udiaeresis ] };
+        key <AD09> { [ o, O, odiaeresis, Odiaeresis ] };
+        key <AC01> { [ a, A, adiaeresis, Adiaeresis ] };
+        key <AC02> { [ s, S, ssharp,     U1E9E     ] };
+    };
+    xkb_geometry { include "pc(pc105)" };
+};
