@@ -50,7 +50,6 @@ alias -g Z='| fzf'
 
 #proxyconnect tcp: EOF# rg
 if (( $+commands[rg] )); then
-  alias grep='rg --no-ignore --hidden --follow'
   alias rga='rg --no-ignore --hidden --follow'
 fi
 
