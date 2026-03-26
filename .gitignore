@@ -53,3 +53,12 @@ hyprland/.runtime/
 
 *.pid
 *.lock
+
+# =========================
+# Secrets and environment
+# =========================
+
+.secrets
+*.secrets
+.env
+*.env

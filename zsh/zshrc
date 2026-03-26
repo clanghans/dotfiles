@@ -18,7 +18,6 @@ zinit wait lucid for \
 
 # Third-party OMZ plugin
 zinit ice wait lucid
-zinit light sheeki03/ohmyzsh-tirith
 
 # Completions and autosuggestions (turbo mode)
 zinit wait lucid for \
