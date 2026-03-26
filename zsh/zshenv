@@ -7,7 +7,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
-export PATH=$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
+export PATH=${HOME}/.nix-profile/bin:${PATH}:${HOME}/.local/bin
 
 export MANPAGER="sh -c 'col -bx | bat --language=man --style=plain --paging=always'"
 export MANROFFOPT='-c'
@@ -29,8 +29,7 @@ export LS_COLORS="$(vivid generate tokyonight-night)"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/config"
 
 # FZF
-export PATH=${PATH}:${HOME}/.fzf/bin
-export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
+# export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
 
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore --exclude ".git"'
@@ -60,11 +59,11 @@ export STOW_SRC_DIR=${HOME}/.local/stow
 # export STOW_DEST_DIR=${HOME}/.local/
 
 # Android SDK
-export ANDROID_HOME=${HOME}/Android/Sdk
-export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
+# export ANDROID_HOME=${HOME}/Android/Sdk
+# export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
 
 # Flutter SDK
-export PATH=${PATH}:/opt/flutter/bin
+# export PATH=${PATH}:/opt/flutter/bin
 
 #XDG-Ninja findings
 # export CCACHE_DIR="${XDG_CACHE_HOME}"/ccache
