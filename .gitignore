@@ -62,3 +62,8 @@ hyprland/.runtime/
 *.secrets
 .env
 *.env
+
+# Git credentials (not committed, lives in ~/.config/git/credentials)
+git/credentials
+git/credentials.local
+!git/credentials.example
