@@ -18,6 +18,7 @@ usage() {
   echo "  --ghostty          Install ghostty config"
   echo "  --nix              Install nix config"
   echo "  --hyprland         Install hyprland config"
+  echo "  --claude           Install claude config"
   echo
 }
 
@@ -163,6 +164,11 @@ install_hyprland() {
   create_symlink "hyprland" "${XDG_CONFIG_HOME}/hypr"
 }
 
+install_claude() {
+  mkdir -p "${HOME}/.claude"
+  create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
+}
+
 main() {
   # Parse arguments
   if [ "$#" -eq 0 ]; then
@@ -211,6 +217,10 @@ main() {
       install_specific+=("hyprland")
       shift
       ;;
+    --claude)
+      install_specific+=("claude")
+      shift
+      ;;
     *)
       echo "Unknown option: ${1}"
       usage
@@ -221,12 +231,10 @@ main() {
 
   check_prerequisits
 
-  # prepare
-  # install_pkgx
-
   # Install all dotfiles if --all is specified
   if [ "$install_all" = true ]; then
     install_alacritty
+    install_claude
     install_fonts
     install_ghostty
     install_hyprland
@@ -239,6 +247,7 @@ main() {
     for section in "${install_specific[@]}"; do
       case "$section" in
       alacritty) install_alacritty ;;
+      claude) install_claude ;;
       fonts) install_fonts ;;
       ghostty) install_ghostty ;;
       hyprland) install_hyprland ;;
