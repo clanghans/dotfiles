@@ -1,7 +1,7 @@
 # Put this in your ~/.gitconfig or ~/.config/git/config
 [user]
 	name = Chris Langhans
-	email = chris@langhans.dev 
+	email = chris.langhans@etas.com
 
 [init]
 	defaultBranch = main
@@ -10,10 +10,10 @@
 	helper = store
 [credential "https://github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !gh auth git-credential
   
 [alias]
 	lg = log --graph --date=relative --pretty=tformat:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset'

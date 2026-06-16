@@ -7,7 +7,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
     -- Assuming that you are using the built-in LSP, you can disable diagnostics like this:
-    vim.diagnostic = require("vim.diagnostic")
     vim.diagnostic.enable(false)
   end,
 })
