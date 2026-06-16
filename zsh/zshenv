@@ -41,7 +41,7 @@ export FZF_CTRL_T_OPTS="
 --bind 'ctrl-/:change-preview-window(down|hidden|),ctrl-j:preview-down,ctrl-k:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up'"
 
 # prevent pip clutter the global environment
-export PIP_REQUIRE_VIRTUALENV=true
+export PIP_REQUIRE_VIRTUALENV=false
 
 # RUST
 export CARGO_HOME=$XDG_CONFIG_HOME/cargo
@@ -74,3 +74,6 @@ export STOW_SRC_DIR=${HOME}/.local/stow
 # # issues while XForwarding
 # # export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 # export HISTFILE="$XDG_STATE_HOME"/zsh/history
+
+# Load machine-local secrets (not committed to repo)
+[[ -f "${HOME}/.secrets" ]] && source "${HOME}/.secrets"

@@ -15,3 +15,5 @@ vim.keymap.del("n", "<leader><tab>d")
 vim.keymap.del("n", "<leader><tab>[")
 
 vim.keymap.set("n", "<leader>wo", "<cmd>resize<cr>", { desc = "increase buffer size" })
+
+vim.keymap.set("n", "<leader>u", vim.cmd.Undotree, { noremap = true, desc = "Undotree" })

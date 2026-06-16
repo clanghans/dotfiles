@@ -167,6 +167,7 @@ install_hyprland() {
 install_claude() {
   mkdir -p "${HOME}/.claude"
   create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
+  create_symlink "claude/skills" "${HOME}/.claude/skills"
 }
 
 main() {

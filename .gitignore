@@ -67,3 +67,6 @@ hyprland/.runtime/
 git/credentials
 git/credentials.local
 !git/credentials.example
+
+# Work-specific shell config (contains internal infra details)
+zsh/zsh/work.zsh
