@@ -90,6 +90,15 @@ alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
 alias cd..='cd ..'
 
+# Headroom (context compression for AI agents)
+if (( $+commands[headroom] )); then
+  alias hr='headroom'
+  alias hrc='headroom wrap claude'
+  alias hrp='headroom perf'
+  alias hrs='headroom agent-savings'
+  alias hrd='headroom doctor'
+fi
+
 # PODMAN
 if (( $+commands[podman] )); then
   alias docker='podman'
