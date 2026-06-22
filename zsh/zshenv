@@ -28,9 +28,6 @@ export LS_COLORS="$(vivid generate tokyonight-night)"
 # RIPGREP
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/config"
 
-# HEADROOM (context compression proxy for AI agents)
-export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
-
 # FZF
 # export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
 
