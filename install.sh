@@ -168,6 +168,11 @@ install_claude() {
   mkdir -p "${HOME}/.claude"
   create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
   create_symlink "claude/skills" "${HOME}/.claude/skills"
+
+  if ! command -v headroom &>/dev/null; then
+    echo "Installing headroom..."
+    uv tool install "headroom-ai[all]"
+  fi
 }
 
 main() {
