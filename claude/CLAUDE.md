@@ -125,3 +125,4 @@ These rules apply to **all written output**: chat responses, code comments, docu
 - Match length to complexity. Short answers for simple questions.
 - No conclusion paragraph that re-summarizes what was just said.
 
+@RTK.md
