@@ -1,5 +1,9 @@
 {
   "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"/home/chris/.claude/plugins/marketplaces/ponytail/hooks/ponytail-statusline.sh\""
+  },
   "hooks": {
     "UserPromptSubmit": [
       {
