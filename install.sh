@@ -58,12 +58,12 @@ git_clone_or_update() {
 }
 
 check_prerequisits() {
-  if ! command -v curl --version &>/dev/null; then
+  if ! command -v curl &>/dev/null; then
     echo "curl not available"
     exit 1
   fi
 
-  if ! command -v git --version &>/dev/null; then
+  if ! command -v git &>/dev/null; then
     echo "git not available"
     exit 1
   fi
@@ -86,6 +86,15 @@ install_tmux() {
   mkdir -p "${tmux_conf_dir}/plugins"
   create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
+
+  if ! command -v tmux-snaglord &>/dev/null; then
+    if command -v cargo &>/dev/null; then
+      echo "Installing tmux-snaglord..."
+      cargo install tmux-snaglord
+    else
+      echo "Skipping tmux-snaglord: cargo not found" >&2
+    fi
+  fi
 }
 
 install_shell() {
@@ -116,11 +125,6 @@ install_i3() {
   mkdir -p "${XDG_CONFIG_HOME}/rofi"
   create_symlink "i3/rofi-launcher" "${LOCAL_BIN}/rofi-launcher"
   create_symlink "i3/rofi.config" "${XDG_CONFIG_HOME}/rofi/config.rasi"
-
-  # polybar
-  mkdir -p "${XDG_CONFIG_HOME}/polybar"
-  create_symlink "i3/polybar.config" "${XDG_CONFIG_HOME}/polybar/config.ini"
-  create_symlink "i3/polybar-launcher" "${LOCAL_BIN}/polybar-launcher"
 }
 
 install_fonts() {
