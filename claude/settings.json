@@ -1,9 +1,8 @@
 {
-  "model": "opus",
-  "statusLine": {
-    "type": "command",
-    "command": "bash \"/home/chris/.claude/plugins/marketplaces/ponytail/hooks/ponytail-statusline.sh\""
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -17,6 +16,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"/home/chris/.claude/plugins/marketplaces/ponytail/hooks/ponytail-statusline.sh\""
+  },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "github@claude-plugins-official": true,
@@ -25,7 +28,6 @@
     "clangd-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true
   },
-  "env": {},
   "extraKnownMarketplaces": {
     "headroom-marketplace": {
       "source": {
