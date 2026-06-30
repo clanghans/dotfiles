@@ -93,7 +93,7 @@ alias cd..='cd ..'
 # Headroom (context compression for AI agents)
 if (( $+commands[headroom] )); then
   alias hr='headroom'
-  alias hrc='headroom wrap claude'
+  alias claude='headroom wrap claude'
   alias hrp='headroom perf'
   alias hrs='headroom agent-savings'
   alias hrd='headroom doctor'
