@@ -16,6 +16,10 @@ model: claude-3-5-sonnet-20241022
 # Use structured edit format for precise diffs
 edit-format: diff
 
+## Output
+# Colorized, readable diff output
+pretty: true
+
 ## Git
 # Auto-commit changes with conventional commit messages
 auto-commits: true
