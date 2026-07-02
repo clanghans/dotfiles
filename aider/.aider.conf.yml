@@ -34,3 +34,16 @@ model-settings-file: aider/model-settings.yml
 # Active voice, no banned words (delve, crucial, leverage, etc.)
 # Match length to complexity, no conclusion paragraphs
 # (These are communicated via the system prompt in model-settings.yml)
+
+## Azure DevOps Integration
+# Environment variables required:
+#   AZURE_DEVOPS_EXT_USER=<your_username>
+#   AZURE_DEVOPS_EXT_PAT=<your_personal_access_token>
+# Organization: REDACTED-ORG-1
+# Project: REDACTED-PROJECT
+# Base API URL: https://dev.azure.com/REDACTED-ORG-1/REDACTED-PROJECT/_apis/
+# (These are documented in the system prompt for the model)
+
+## RTK Guidelines
+# Refer to @RTK.md for RTK-specific guidelines when working with RTK-related code.
+# (Aider doesn't support file includes; the system prompt mentions this reference)

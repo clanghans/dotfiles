@@ -42,3 +42,16 @@ system_message: |
   - No flattery; skip compliments unless specifically asked for judgment
   - Ask questions if intent is unclear rather than guessing
   - Your changes will be reviewed by Codex and Github Copilot, so do your best
+
+  ### Azure DevOps Integration
+  - To access Azure DevOps work items and APIs, use the following environment variables:
+    - `AZURE_DEVOPS_EXT_USER=<your_username>`
+    - `AZURE_DEVOPS_EXT_PAT=<your_personal_access_token>`
+  - Fetch work item details using Azure CLI:
+    - `az boards work-item show --id <WORK_ITEM_ID> --org https://dev.azure.com/REDACTED-ORG-1`
+  - Organization: `REDACTED-ORG-1`
+  - Project: `REDACTED-PROJECT`
+  - Base API URL: `https://dev.azure.com/REDACTED-ORG-1/REDACTED-PROJECT/_apis/`
+
+  ### Additional Context
+  - Refer to `@RTK.md` for RTK-specific guidelines when working with RTK-related code.
