@@ -8,6 +8,38 @@
 # Load system prompt from model-settings.yml
 model-settings-file: aider/model-settings.yml
 
+## Model
+# Use Claude 3.5 Sonnet (or your preferred model)
+model: claude-3-5-sonnet-20241022
+
+## Edit Format
+# Use structured edit format for precise diffs
+edit-format: diff
+
+## Git
+# Auto-commit changes with conventional commit messages
+auto-commits: true
+# Dirty commits allowed (commit even if repo has uncommitted changes)
+dirty-commits: true
+# Attribute commits to the human developer (no AI attribution)
+attribute-author: true
+# Attribute committer as well
+attribute-committer: true
+
+## Advanced Options
+# Enable map-tokens for large repo context
+map-tokens: 1024
+# Cache prompts to reduce API calls
+cache-prompts: true
+# Watch files for external changes
+watch-files: true
+# Use tree-sitter for better code understanding
+tree-sitter: true
+# Enable linting of changed files
+lint: true
+# Test command to run after changes (adjust to your project)
+# test-cmd: "pytest"
+
 ## Git Commit Convention
 # Format: <type>(<scope>): <subject>
 # Types: feat, fix, docs, style, refactor, test, chore, perf
