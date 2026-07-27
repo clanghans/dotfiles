@@ -14,16 +14,16 @@ export AZURE_DEVOPS_EXT_PAT=<your_personal_access_token>
 Fetch work item details using Azure CLI:
 
 ```bash
-az boards work-item show --id <WORK_ITEM_ID> --org https://dev.azure.com/REDACTED-ORG-1
+az boards work-item show --id <WORK_ITEM_ID> --org https://dev.azure.com/<ORG>
 ```
 
-Replace `<WORK_ITEM_ID>` with the actual work item ID (e.g., `98554`).
+Replace `<WORK_ITEM_ID>` with the actual work item ID and `<ORG>` with the org slug.
 
 ### Organization & Project Details
 
-- **Organization:** `REDACTED-ORG-1`
-- **Project:** `REDACTED-PROJECT`
-- **Base API URL:** `https://dev.azure.com/REDACTED-ORG-1/REDACTED-PROJECT/_apis/`
+- **Organization:** `<ORG>`
+- **Project:** `<PROJECT>`
+- **Base API URL:** `https://dev.azure.com/<ORG>/<PROJECT>/_apis/`
 
 ### Useful References
 

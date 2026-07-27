@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-[ -f "$HOME/.zshenv" ] && . "$HOME/.zshenv"
-exec rofi -show combi

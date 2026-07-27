@@ -12,7 +12,6 @@ usage() {
   echo "  --all              Install all dotfiles"
   echo "  --shell            Install shell environment"
   echo "  --tmux             Install tmux config"
-  echo "  --i3               Install i3 config"
   echo "  --fonts            Install fonts"
   echo "  --alacritty        Install alacritty config"
   echo "  --ghostty          Install ghostty config"
@@ -114,19 +113,6 @@ install_shell() {
   echo "run 'chsh -s /bin/zsh' to change default shell to zsh"
 }
 
-install_i3() {
-  mkdir -p "${XDG_CONFIG_HOME}/i3"
-
-  create_symlink "i3/config" "${XDG_CONFIG_HOME}/i3/config"
-  create_symlink "i3/chrome" "${LOCAL_BIN}/chrome"
-  create_symlink "i3/i3-display-swap.sh" "${LOCAL_BIN}/i3-display-swap.sh"
-
-  # rofi
-  mkdir -p "${XDG_CONFIG_HOME}/rofi"
-  create_symlink "i3/rofi-launcher" "${LOCAL_BIN}/rofi-launcher"
-  create_symlink "i3/rofi.config" "${XDG_CONFIG_HOME}/rofi/config.rasi"
-}
-
 install_fonts() {
   local font_dir="${HOME}/.local/share/fonts"
   mkdir -p "${font_dir}"
@@ -206,10 +192,6 @@ main() {
       install_specific+=("shell")
       shift
       ;;
-    --i3)
-      install_specific+=("i3")
-      shift
-      ;;
     --fonts)
       install_specific+=("fonts")
       shift
@@ -251,7 +233,6 @@ main() {
     install_fonts
     install_ghostty
     install_hyprland
-    install_i3
     install_nix
     install_shell
     install_tmux
@@ -264,7 +245,6 @@ main() {
       fonts) install_fonts ;;
       ghostty) install_ghostty ;;
       hyprland) install_hyprland ;;
-      i3) install_i3 ;;
       nix) install_nix ;;
       shell) install_shell ;;
       tmux) install_tmux ;;
