@@ -17,6 +17,7 @@ usage() {
   echo "  --ghostty          Install ghostty config"
   echo "  --nix              Install nix config"
   echo "  --hyprland         Install hyprland config"
+  echo "  --herdr            Install herdr config"
   echo "  --claude           Install claude config"
   echo
 }
@@ -94,6 +95,13 @@ install_tmux() {
       echo "Skipping tmux-snaglord: cargo not found" >&2
     fi
   fi
+}
+
+install_herdr() {
+  local herdr_conf_dir="${XDG_CONFIG_HOME}/herdr"
+
+  mkdir -p "${herdr_conf_dir}"
+  create_symlink "herdr/config.toml" "${herdr_conf_dir}/config.toml"
 }
 
 install_shell() {
@@ -188,6 +196,10 @@ main() {
       install_specific+=("tmux")
       shift
       ;;
+    --herdr)
+      install_specific+=("herdr")
+      shift
+      ;;
     --shell)
       install_specific+=("shell")
       shift
@@ -232,6 +244,7 @@ main() {
     install_claude
     install_fonts
     install_ghostty
+    install_herdr
     install_hyprland
     install_nix
     install_shell
@@ -244,6 +257,7 @@ main() {
       claude) install_claude ;;
       fonts) install_fonts ;;
       ghostty) install_ghostty ;;
+      herdr) install_herdr ;;
       hyprland) install_hyprland ;;
       nix) install_nix ;;
       shell) install_shell ;;

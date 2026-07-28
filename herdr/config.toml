@@ -1,0 +1,83 @@
+# herdr configuration - migrated from tmux
+
+[theme]
+# Dracula theme to match your previous tmux setup
+name = "dracula"
+auto_switch = true
+dark_name = "dracula"
+light_name = "dracula"
+
+[terminal]
+# New panes inherit CWD from the source pane (like tmux default)
+new_cwd = "follow"
+
+[keys]
+# Use default ctrl+b prefix
+prefix = "ctrl+b"
+
+# Workspace management (replaces your tmux-fzf/frost session handling)
+workspace_picker = "prefix+w"           # Open workspace picker
+new_workspace = "prefix+shift+n"        # Create new workspace
+rename_workspace = "prefix+shift+w"     # Rename workspace
+close_workspace = "prefix+shift+d"      # Close workspace
+
+# Tab management (replaces your tmux window bindings)
+new_tab = "prefix+c"                    # Create new tab (matches your C-c habit)
+next_tab = "prefix+n"
+previous_tab = "prefix+p"
+close_tab = "prefix+shift+x"
+
+# Pane navigation (herdr's equivalents to your vim-tmux-navigator)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+split_vertical = "prefix+v"
+split_horizontal = "prefix+minus"
+close_pane = "prefix+x"
+zoom = "prefix+z"
+
+# Additional useful bindings
+cycle_pane_next = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+edit_scrollback = "prefix+e"           # Like copy mode
+toggle_sidebar = "prefix+b"
+reload_config = "prefix+shift+r"
+
+# Custom commands
+# Uncomment and adjust if you want to bind tmux-snaglord or similar tools
+# [[keys.command]]
+# key = "prefix+y"
+# type = "popup"
+# command = "tmux-snaglord"
+# width = "80%"
+# height = "60%"
+
+[ui]
+# Visual preferences
+pane_borders = true
+pane_gaps = true
+mouse_capture = true
+copy_on_select = true
+
+# Sidebar behavior
+sidebar_width = 26
+agent_panel_sort = "spaces"
+
+# Notifications
+[ui.toast]
+delivery = "herdr"
+
+[ui.toast.herdr]
+position = "bottom-right"
+
+# Session restoration for AI agents
+[session]
+resume_agents_on_restore = true
+
+# Remote SSH
+[remote]
+manage_ssh_config = true
+
+[experimental]
+allow_nested = false
