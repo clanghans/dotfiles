@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration - migrated from tmux
 
 [theme]
@@ -16,16 +17,16 @@ new_cwd = "follow"
 prefix = "ctrl+b"
 
 # Workspace management (replaces your tmux-fzf/frost session handling)
-workspace_picker = "prefix+w"           # Open workspace picker
-new_workspace = "prefix+shift+n"        # Create new workspace
-rename_workspace = "prefix+shift+w"     # Rename workspace
-close_workspace = "prefix+shift+d"      # Close workspace
+workspace_picker = "prefix+w"       # Open workspace picker
+new_workspace = "prefix+shift+n"    # Create new workspace
+rename_workspace = "prefix+shift+w" # Rename workspace
+close_workspace = "prefix+shift+d"  # Close workspace
 
 # Tab management (replaces your tmux window bindings)
-new_tab = "prefix+c"                    # Create new tab (matches your C-c habit)
+new_tab = "prefix+c"      # Create new tab (matches your C-c habit)
 next_tab = "prefix+n"
 previous_tab = "prefix+p"
-close_tab = "prefix+shift+x"
+close_tab = "prefix+x"
 
 # Pane navigation (herdr's equivalents to your vim-tmux-navigator)
 focus_pane_left = "ctrl+h"
@@ -40,22 +41,23 @@ zoom = "prefix+z"
 # Additional useful bindings
 cycle_pane_next = "prefix+tab"
 cycle_pane_previous = "prefix+shift+tab"
-edit_scrollback = "prefix+e"           # Like copy mode
+edit_scrollback = "prefix+e"             # Like copy mode
 toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
 
 # Custom commands
-# Uncomment and adjust if you want to bind tmux-snaglord or similar tools
-# [[keys.command]]
-# key = "prefix+y"
-# type = "popup"
-# command = "tmux-snaglord"
-# width = "80%"
-# height = "60%"
+[[keys.command]]
+key = "prefix+space"
+type = "popup"
+command = "herdr workspace list | jq -r '.result.workspaces[] | \"\\(.workspace_id) \\(.label)\"' | fzf | awk '{print $1}' | xargs herdr workspace focus"
+width = "80%"
+height = "60%"
 
 [ui]
 # Visual preferences
 pane_borders = true
+prompt_new_workspace_name = true
+hide_tab_bar_when_single_tab = true
 pane_gaps = true
 mouse_capture = true
 copy_on_select = true
