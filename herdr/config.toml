@@ -23,9 +23,9 @@ rename_workspace = "prefix+shift+w" # Rename workspace
 close_workspace = "prefix+shift+d"  # Close workspace
 
 # Tab management (replaces your tmux window bindings)
-new_tab = "prefix+c"      # Create new tab (matches your C-c habit)
-next_tab = "prefix+n"
-previous_tab = "prefix+p"
+new_tab = "prefix+c"
+next_tab = ["prefix+n", "prefix+ctrl+n"]
+previous_tab = ["prefix+p", "prefix+ctrl+p"]
 close_tab = "prefix+x"
 
 # Pane navigation (herdr's equivalents to your vim-tmux-navigator)
@@ -33,9 +33,9 @@ focus_pane_left = "ctrl+h"
 focus_pane_down = "ctrl+j"
 focus_pane_up = "ctrl+k"
 focus_pane_right = "ctrl+l"
-split_vertical = "prefix+v"
+split_vertical = "prefix+\\"
 split_horizontal = "prefix+minus"
-close_pane = "prefix+x"
+close_pane = "prefix+q"
 zoom = "prefix+z"
 
 # Additional useful bindings
@@ -45,19 +45,25 @@ edit_scrollback = "prefix+e"             # Like copy mode
 toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
 
-# Custom commands
+# Workspace navigation (recent navigator plugin)
+[[keys.command]]
+key = "prefix+ctrl+space"
+type = "plugin_action"
+command = "beyondlex.herdr-recent-navigator.focus-workspaces"
+description = "Recent workspaces popup"
+
 [[keys.command]]
 key = "prefix+space"
-type = "popup"
-command = "herdr workspace list | jq -r '.result.workspaces[] | \"\\(.workspace_id) \\(.label)\"' | fzf | awk '{print $1}' | xargs herdr workspace focus"
-width = "80%"
-height = "60%"
+type = "plugin_action"
+command = "third774.last-workspace.toggle"
+description = "Recent workspace"
 
 [ui]
 # Visual preferences
 pane_borders = true
 prompt_new_workspace_name = true
-hide_tab_bar_when_single_tab = true
+prompt_new_tab_name = false
+hide_tab_bar_when_single_tab = false
 pane_gaps = true
 mouse_capture = true
 copy_on_select = true
