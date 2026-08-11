@@ -7,7 +7,11 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
-export PATH=${HOME}/.nix-profile/bin:${PATH}:${HOME}/.local/bin
+export PATH=${HOME}/.nix-profile/bin:${PATH}:
+export PATH=${PATH}:${HOME}/.local/bin:
+export PATH=${PATH}:${HOME}/go/bin:
+export PATH=${PATH}:${XDG_CONFIG_HOME}/cargo/bin:
+export PATH=${PATH}:${GEM_HOME}/bin:
 
 export MANPAGER="sh -c 'col -bx | bat --language=man --style=plain --paging=always'"
 export MANROFFOPT='-c'
@@ -46,12 +50,10 @@ export PIP_REQUIRE_VIRTUALENV=false
 # RUST
 export CARGO_HOME=$XDG_CONFIG_HOME/cargo
 export RUSTUP_HOME=$XDG_CONFIG_HOME/rustup
-export PATH=${PATH}:${XDG_CONFIG_HOME}/cargo/bin
 export RUSTC_WRAPPER=sccache
 
 # GEM
 export GEM_HOME=${XDG_DATA_HOME}/gem
-export PATH=${PATH}:${GEM_HOME}/bin
 
 # STOW
 export STOW_SRC_DIR=${HOME}/.local/stow
