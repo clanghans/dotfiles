@@ -18,6 +18,7 @@ usage() {
   echo "  --nix              Install nix config"
   echo "  --hyprland         Install hyprland config"
   echo "  --herdr            Install herdr config"
+  echo "  --yazi             Install yazi config"
   echo "  --claude           Install claude config"
   echo
 }
@@ -158,6 +159,11 @@ install_ghostty() {
   create_symlink "ghostty/config" "${XDG_CONFIG_HOME}/ghostty/config"
 }
 
+install_yazi() {
+  mkdir -p "${XDG_CONFIG_HOME}/yazi"
+  create_symlink "yazi/yazi.toml" "${XDG_CONFIG_HOME}/yazi/yazi.toml"
+}
+
 install_hyprland() {
   create_symlink "hyprland" "${XDG_CONFIG_HOME}/hypr"
 }
@@ -167,6 +173,7 @@ install_claude() {
   create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
   create_symlink "claude/RTK.md" "${HOME}/.claude/RTK.md"
   create_symlink "claude/settings.json" "${HOME}/.claude/settings.json"
+  create_symlink "claude/statusline.sh" "${HOME}/.claude/statusline.sh"
   create_symlink "claude/hooks/rtk-rewrite.sh" "${HOME}/.claude/hooks/rtk-rewrite.sh"
   create_symlink "claude/skills" "${HOME}/.claude/skills"
 
@@ -224,6 +231,10 @@ main() {
       install_specific+=("hyprland")
       shift
       ;;
+    --yazi)
+      install_specific+=("yazi")
+      shift
+      ;;
     --claude)
       install_specific+=("claude")
       shift
@@ -249,6 +260,7 @@ main() {
     install_nix
     install_shell
     install_tmux
+    install_yazi
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
@@ -262,6 +274,7 @@ main() {
       nix) install_nix ;;
       shell) install_shell ;;
       tmux) install_tmux ;;
+      yazi) install_yazi ;;
       esac
     done
   fi
