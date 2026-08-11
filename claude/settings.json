@@ -1,5 +1,4 @@
 {
-  "model": "claude-glm-5",
   "hooks": {
     "PreToolUse": [
       {
@@ -8,6 +7,18 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/home/chris/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }

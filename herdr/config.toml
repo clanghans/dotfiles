@@ -58,6 +58,13 @@ type = "plugin_action"
 command = "third774.last-workspace.toggle"
 description = "Recent workspace"
 
+[[keys.command]]
+key = "prefix+ctrl+y"
+type = "popup"
+command = "herdr-snaglord"
+width = "60%"
+height = "60%"
+
 [ui]
 # Visual preferences
 pane_borders = true

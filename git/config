@@ -7,7 +7,7 @@
 	defaultBranch = main
 
 [credential]
-	helper = store
+	helper = gh
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential

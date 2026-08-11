@@ -3,6 +3,7 @@
 
 # XDG
 export XDG_DATA_HOME=$HOME/.local/share
+export XDG_STATE_HOME=$HOME/.local/state
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
@@ -75,7 +76,9 @@ export STOW_SRC_DIR=${HOME}/.local/stow
 # export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 # # issues while XForwarding
 # # export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
-# export HISTFILE="$XDG_STATE_HOME"/zsh/history
+export HISTFILE="$XDG_STATE_HOME"/zsh/history
+export SAVEHIST=10000
+export HISTSIZE=10000
 
 # Load machine-local secrets (not committed to repo)
 [[ -f "${HOME}/.secrets" ]] && source "${HOME}/.secrets"
