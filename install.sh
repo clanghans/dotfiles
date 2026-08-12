@@ -104,8 +104,8 @@ install_herdr() {
   mkdir -p "${herdr_conf_dir}"
   create_symlink "herdr/config.toml" "${herdr_conf_dir}/config.toml"
   herdr integration install claude
-  herdr plugin install -y third774/herdr-last-workspace
-  herdr plugin install -y beyondlex/herdr-recent-navigator
+  herdr plugin install third774/herdr-last-workspace --yes
+  herdr plugin install beyondlex/herdr-recent-navigator --yes
 }
 
 install_shell() {
