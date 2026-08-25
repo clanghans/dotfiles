@@ -90,6 +90,11 @@ function git_branch_worktree_create() {
     return
   }
 
+  # Find the main worktree root to use for relative paths, in case we're
+  # in a linked worktree. The first 'worktree' line is always the main one.
+  local main_wt
+  main_wt=$(git worktree list --porcelain | grep -m1 '^worktree ' | cut -d' ' -f2)
+
   local branch_name
   local selected_ref
   local is_tag=false
@@ -125,13 +130,14 @@ function git_branch_worktree_create() {
       # Default branch name from tag, replacing / with -
       branch_name=$(echo "$selected_ref" | sed 's/\//-/g')
     else
-      # Clean up branch name: strip origin/ prefix and leading whitespace/asterisk
-      branch_name=$(echo "$selected_ref" | sed -r 's/^.*origin\///;s/^\*?\s+//g')
+      # Strip a leading origin/ prefix to derive the local branch name.
+      # %(refname:short) already omits the current-branch marker.
+      branch_name=${selected_ref#origin/}
     fi
   fi
 
-  # Use the branch name as the default worktree path
-  local worktree_path="../$branch_name"
+  # Use the branch name as the default worktree path, relative to main worktree.
+  local worktree_path="${main_wt}/../$branch_name"
 
   # Prompt for the new worktree path, showing the default
   read -r user_path?"Enter the path for the new worktree [$worktree_path]: "
@@ -143,8 +149,14 @@ function git_branch_worktree_create() {
     return
   fi
 
-  # Create a new worktree
-  git worktree add -b "$branch_name" "$worktree_path" "$selected_ref" || return
+  # Create the worktree. Use -b only when the branch does not already exist
+  # locally: -b always tries to create, which fails for an existing branch,
+  # and a plain add would detach HEAD for a remote ref or tag.
+  local -a add_args=("$worktree_path")
+  if ! git show-ref -q --heads "$branch_name"; then
+    add_args=(-b "$branch_name" "${add_args[@]}")
+  fi
+  git worktree add "${add_args[@]}" "$selected_ref" || return
 
   cd "$worktree_path" || return
 }
