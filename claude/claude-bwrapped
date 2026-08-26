@@ -22,7 +22,7 @@ set -euo pipefail
 
 ulimit -t 600          # CPU time (seconds)
 ulimit -v $((20<<20))  # 20 GiB virtual memory
-ulimit -u 200          # Max processes
+ulimit -u 1000         # Max processes
 ulimit -f 1048576      # Max file size (512 MiB; unit is 512-byte blocks)
 
 mkdir -p "$HOME/.cache/claude"

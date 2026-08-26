@@ -179,7 +179,7 @@ install_claude() {
   create_symlink "claude/statusline.sh" "${HOME}/.claude/statusline.sh"
   create_symlink "claude/hooks/rtk-rewrite.sh" "${HOME}/.claude/hooks/rtk-rewrite.sh"
   create_symlink "claude/skills" "${HOME}/.claude/skills"
-  create_symlink "claude/claude-bwrapped" "${HOME}/bin/claude-bwrapped"
+  create_symlink "claude/claude-bwrapped" "${HOME}/.local/bin/claude-bwrapped"
 
   if ! command -v headroom &>/dev/null; then
     echo "Installing headroom..."
