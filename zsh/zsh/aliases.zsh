@@ -99,6 +99,11 @@ if (( $+commands[headroom] )); then
   alias hrd='headroom doctor'
 fi
 
+# Claude (sandboxed via bwrap)
+if (( $+commands[claude-bwrapped] )); then
+  alias claude='claude-bwrapped'
+fi
+
 # PODMAN
 if (( $+commands[podman] )); then
   alias docker='podman'
