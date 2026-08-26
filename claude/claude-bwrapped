@@ -15,6 +15,8 @@ set -euo pipefail
 #                         Read-only; gh auth refresh inside the sandbox is not needed.
 #   ~/.cache/claude   rw — claude's own cache; narrowed from ~/.cache to avoid
 #                         exposing browser caches and limit the exfiltration surface.
+#   ~/.secrets        parsed and injected as individual --setenv args; the file
+#                         itself is not bound into the sandbox.
 #   $(pwd)            rw — the project being worked on.
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
@@ -26,6 +28,26 @@ ulimit -u 1000         # Max processes
 ulimit -f 1048576      # Max file size (512 MiB; unit is 512-byte blocks)
 
 mkdir -p "$HOME/.cache/claude"
+touch "$HOME/.claude.json"
+
+# Parse ~/.secrets and build --setenv args for each KEY=value line.
+# The file itself is not bound — only the values are injected.
+declare -a secret_envs=()
+if [[ -f "$HOME/.secrets" ]]; then
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line#export }"
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line//[[:space:]]/}" ]] && continue
+        key="${line%%=*}"
+        value="${line#*=}"
+        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+        # Strip surrounding quotes
+        if [[ "$value" =~ ^\"(.*)\"$ ]] || [[ "$value" =~ ^\'(.*)\'$ ]]; then
+            value="${BASH_REMATCH[1]}"
+        fi
+        secret_envs+=(--setenv "$key" "$value")
+    done < "$HOME/.secrets"
+fi
 
 exec bwrap \
     --new-session \
@@ -72,4 +94,5 @@ exec bwrap \
     --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
     --setenv LANG "${LANG:-C.UTF-8}" \
     --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
+    "${secret_envs[@]}" \
     -- claude --dangerously-skip-permissions "$@"
