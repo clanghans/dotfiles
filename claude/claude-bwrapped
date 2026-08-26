@@ -47,6 +47,7 @@ exec bwrap \
     --tmpfs "$HOME" \
     --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
     --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
+    --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv" \
     --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
     --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
     --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
