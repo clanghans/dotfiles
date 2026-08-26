@@ -52,6 +52,7 @@ exec bwrap \
     --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
     --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
     --ro-bind "$HOME/bin" "$HOME/bin" \
+    --bind-try "$HOME/.claude.json" "$HOME/.claude.json" \
     --bind "$HOME/.claude" "$HOME/.claude" \
     --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
     --dir "$HOME/.cache" \
