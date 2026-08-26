@@ -37,12 +37,9 @@ exec bwrap \
     --ro-bind /etc /etc \
     --ro-bind /bin /bin \
     --ro-bind /sbin /sbin \
-    --ro-bind /lib /lib \
-    --ro-bind /lib64 /lib64 \
+    --ro-bind-try /lib /lib \
+    --ro-bind-try /lib64 /lib64 \
     --ro-bind /nix /nix \
-    --dir /mnt \
-    --dir /mnt/wsl \
-    --ro-bind /mnt/wsl/resolv.conf /mnt/wsl/resolv.conf \
     --tmpfs /tmp \
     --tmpfs /var/tmp \
     --proc /proc \
@@ -56,6 +53,7 @@ exec bwrap \
     --ro-bind "$HOME/bin" "$HOME/bin" \
     --bind "$HOME/.claude" "$HOME/.claude" \
     --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
+    --dir "$HOME/.cache" \
     --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
     --bind "$(pwd)" "$(pwd)" \
     --chdir "$(pwd)" \
@@ -65,6 +63,8 @@ exec bwrap \
     --setenv HOSTNAME "$HOSTNAME" \
     --setenv USER "$(id -un)" \
     --setenv LOGNAME "$(id -un)" \
+    --setenv SHELL "${SHELL:-/bin/bash}" \
+    --setenv TERM "${TERM:-xterm-256color}" \
     --setenv XDG_CACHE_HOME "$HOME/.cache" \
     --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
     --setenv LANG "${LANG:-C.UTF-8}" \
