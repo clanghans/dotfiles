@@ -30,6 +30,12 @@ ulimit -f 1048576      # Max file size (512 MiB; unit is 512-byte blocks)
 mkdir -p "$HOME/.cache/claude"
 touch "$HOME/.claude.json"
 
+# Pass through proxy and API endpoint vars if set in the outer environment.
+declare -a proxy_envs=()
+for var in http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY ANTHROPIC_BASE_URL; do
+    [[ -n "${!var+x}" ]] && proxy_envs+=(--setenv "$var" "${!var}")
+done
+
 # Parse ~/.secrets and build --setenv args for each KEY=value line.
 # The file itself is not bound — only the values are injected.
 declare -a secret_envs=()
@@ -94,5 +100,6 @@ exec bwrap \
     --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
     --setenv LANG "${LANG:-C.UTF-8}" \
     --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
+    "${proxy_envs[@]}" \
     "${secret_envs[@]}" \
     -- claude --dangerously-skip-permissions "$@"
