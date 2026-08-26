@@ -1,0 +1,72 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+# Bubblewrap sandbox for claude (Claude Code CLI).
+#
+# Same isolation model as bwrapped (opencode), adapted for claude:
+#
+#   /nix              ro — claude is a Nix package; its Node.js runtime and
+#                         all closure dependencies live here.
+#   ~/.nix-profile    recreated as a symlink into ~/.local/state/nix/profiles/,
+#                         so PATH resolution through the profile works.
+#   ~/.claude         rw — auth tokens, memory files, sessions, settings.
+#                         Must be writable; claude reads and writes here constantly.
+#   ~/.config/gh      ro — GitHub CLI auth used by the GitHub MCP server.
+#                         Read-only; gh auth refresh inside the sandbox is not needed.
+#   ~/.cache/claude   rw — claude's own cache; narrowed from ~/.cache to avoid
+#                         exposing browser caches and limit the exfiltration surface.
+#   $(pwd)            rw — the project being worked on.
+#
+# Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
+#   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot
+
+ulimit -t 600          # CPU time (seconds)
+ulimit -v $((20<<20))  # 20 GiB virtual memory
+ulimit -u 200          # Max processes
+ulimit -f 1048576      # Max file size (512 MiB; unit is 512-byte blocks)
+
+mkdir -p "$HOME/.cache/claude"
+
+exec bwrap \
+    --new-session \
+    --die-with-parent \
+    --unshare-all \
+    --share-net \
+    --cap-drop all \
+    --ro-bind /usr /usr \
+    --ro-bind /etc /etc \
+    --ro-bind /bin /bin \
+    --ro-bind /sbin /sbin \
+    --ro-bind /lib /lib \
+    --ro-bind /lib64 /lib64 \
+    --ro-bind /nix /nix \
+    --dir /mnt \
+    --dir /mnt/wsl \
+    --ro-bind /mnt/wsl/resolv.conf /mnt/wsl/resolv.conf \
+    --tmpfs /tmp \
+    --tmpfs /var/tmp \
+    --proc /proc \
+    --dev /dev \
+    --tmpfs "$HOME" \
+    --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
+    --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
+    --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
+    --ro-bind "$HOME/.gitconfig" "$HOME/.gitconfig" \
+    --ro-bind "$HOME/.gitignore" "$HOME/.gitignore" \
+    --ro-bind "$HOME/bin" "$HOME/bin" \
+    --bind "$HOME/.claude" "$HOME/.claude" \
+    --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
+    --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
+    --bind "$(pwd)" "$(pwd)" \
+    --chdir "$(pwd)" \
+    --hostname sandbox \
+    --clearenv \
+    --setenv HOME "$HOME" \
+    --setenv HOSTNAME "$HOSTNAME" \
+    --setenv USER "$(id -un)" \
+    --setenv LOGNAME "$(id -un)" \
+    --setenv XDG_CACHE_HOME "$HOME/.cache" \
+    --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
+    --setenv LANG "${LANG:-C.UTF-8}" \
+    --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
+    -- claude --dangerously-skip-permissions "$@"

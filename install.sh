@@ -172,13 +172,14 @@ install_hyprland() {
 }
 
 install_claude() {
-  mkdir -p "${HOME}/.claude/hooks"
+  mkdir -p "${HOME}/.claude/hooks" "${HOME}/bin"
   create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
   create_symlink "claude/RTK.md" "${HOME}/.claude/RTK.md"
   create_symlink "claude/settings.json" "${HOME}/.claude/settings.json"
   create_symlink "claude/statusline.sh" "${HOME}/.claude/statusline.sh"
   create_symlink "claude/hooks/rtk-rewrite.sh" "${HOME}/.claude/hooks/rtk-rewrite.sh"
   create_symlink "claude/skills" "${HOME}/.claude/skills"
+  create_symlink "claude/claude-bwrapped" "${HOME}/bin/claude-bwrapped"
 
   if ! command -v headroom &>/dev/null; then
     echo "Installing headroom..."
