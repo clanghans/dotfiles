@@ -48,8 +48,9 @@ exec bwrap \
     --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
     --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
     --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
-    --ro-bind "$HOME/.gitconfig" "$HOME/.gitconfig" \
-    --ro-bind "$HOME/.gitignore" "$HOME/.gitignore" \
+    --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
+    --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
+    --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
     --ro-bind "$HOME/bin" "$HOME/bin" \
     --bind "$HOME/.claude" "$HOME/.claude" \
     --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
