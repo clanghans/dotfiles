@@ -17,7 +17,12 @@ set -euo pipefail
 #                         exposing browser caches and limit the exfiltration surface.
 #   ~/.secrets        parsed and injected as individual --setenv args; the file
 #                         itself is not bound into the sandbox.
-#   $(pwd)            rw — the project being worked on.
+#   ~/ws              rw — workspace root, bound so claude can reach sibling
+#                         repos and git worktree metadata that lives in the
+#                         main repo's .git/worktrees/ directory.  Without this,
+#                         git commands fail inside a worktree because its .git
+#                         pointer resolves to a path outside $(pwd).
+#   $(pwd)            rw — the project being worked on (--chdir target).
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
 #   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot
@@ -86,6 +91,7 @@ exec bwrap \
     --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
     --dir "$HOME/.cache" \
     --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
+    --bind-try "$HOME/ws" "$HOME/ws" \
     --bind "$(pwd)" "$(pwd)" \
     --chdir "$(pwd)" \
     --hostname sandbox \
