@@ -45,7 +45,7 @@ Replace `<WORK_ITEM_ID>` with the actual work item ID and `<ORG>` with the org s
 - **Format**: `<type>(<scope>): <subject>`
 - **Types**: feat, fix, docs, style, refactor, test, chore, perf
 - **Subject Rules**:
-  - Max 50 characters
+  - Max 72 characters (matches gitlint T1, enforced on non-merge commits)
   - Imperative mood ("add" not "added")
   - No period at the end
 - **Commit Structure**:
