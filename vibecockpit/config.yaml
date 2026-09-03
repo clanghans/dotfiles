@@ -1,0 +1,6 @@
+version: dev
+terminal: custom
+custom_terminal_cmd: tmux new-window -n agent -c {dir} {cmd}
+new_project_dir: ~/ws
+theme: light
+sort_by: modified

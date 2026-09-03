@@ -20,6 +20,7 @@ usage() {
   echo "  --herdr            Install herdr config"
   echo "  --yazi             Install yazi config"
   echo "  --claude           Install claude config"
+  echo "  --vibecockpit      Install vibecockpit config"
   echo
 }
 
@@ -96,6 +97,12 @@ install_tmux() {
       echo "Skipping tmux-snaglord: cargo not found" >&2
     fi
   fi
+}
+
+install_vibecockpit() {
+  local vc_conf_dir="${XDG_CONFIG_HOME}/vibecockpit"
+  mkdir -p "${vc_conf_dir}"
+  create_symlink "vibecockpit/config.yaml" "${vc_conf_dir}/config.yaml"
 }
 
 install_herdr() {
@@ -243,6 +250,10 @@ main() {
       install_specific+=("claude")
       shift
       ;;
+    --vibecockpit)
+      install_specific+=("vibecockpit")
+      shift
+      ;;
     *)
       echo "Unknown option: ${1}"
       usage
@@ -257,6 +268,7 @@ main() {
   if [ "$install_all" = true ]; then
     install_alacritty
     install_claude
+    install_vibecockpit
     install_fonts
     install_ghostty
     install_herdr
@@ -271,6 +283,7 @@ main() {
       case "$section" in
       alacritty) install_alacritty ;;
       claude) install_claude ;;
+      vibecockpit) install_vibecockpit ;;
       fonts) install_fonts ;;
       ghostty) install_ghostty ;;
       herdr) install_herdr ;;

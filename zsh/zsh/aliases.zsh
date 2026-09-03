@@ -48,6 +48,10 @@ alias -g NUL='|& /dev/null'
 alias -g ERRNUL='2>/dev/null'
 alias -g Z='| fzf'
 
+if (( $+commands[vibecockpit] )); then
+  alias vc='vibecockpit'
+fi
+
 #proxyconnect tcp: EOF# rg
 if (( $+commands[rg] )); then
   alias rga='rg --no-ignore --hidden --follow'
