@@ -26,7 +26,7 @@ close_workspace = "prefix+shift+d"  # Close workspace
 new_tab = "prefix+c"
 next_tab = ["prefix+n", "prefix+ctrl+n"]
 previous_tab = ["prefix+p", "prefix+ctrl+p"]
-close_tab = "prefix+x"
+close_tab = "prefix+shift+x"
 
 # Pane navigation (herdr's equivalents to your vim-tmux-navigator)
 focus_pane_left = "ctrl+h"
@@ -35,7 +35,7 @@ focus_pane_up = "ctrl+k"
 focus_pane_right = "ctrl+l"
 split_vertical = "prefix+\\"
 split_horizontal = "prefix+minus"
-close_pane = "prefix+q"
+close_pane = ""
 zoom = "prefix+z"
 
 # Additional useful bindings
@@ -46,6 +46,12 @@ toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
 
 # Workspace navigation (recent navigator plugin)
+[[keys.command]]
+key = "prefix+x"
+type = "plugin_action"
+command = "confirm-close-pane.confirm-close-pane"
+description = "Close pane (with confirmation)"
+
 [[keys.command]]
 key = "prefix+ctrl+space"
 type = "plugin_action"

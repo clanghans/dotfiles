@@ -113,6 +113,7 @@ install_herdr() {
   herdr integration install claude
   herdr plugin install third774/herdr-last-workspace --yes
   herdr plugin install beyondlex/herdr-recent-navigator --yes
+  herdr plugin install poweroutlet2/herdr-confirm-close-pane --yes
 }
 
 install_shell() {
