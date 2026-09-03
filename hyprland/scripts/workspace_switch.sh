@@ -8,7 +8,11 @@ STATE_FILE="/tmp/hypr_monitors_swapped"
 if [[ -f "$STATE_FILE" ]]; then
   read -r WS1 WS2 < "$STATE_FILE"
   rm "$STATE_FILE"
-  hyprctl --batch "dispatch moveworkspacetomonitor $WS1 DP-1 ; dispatch moveworkspacetomonitor $WS2 DP-2 ; dispatch workspace $WS"
+  hyprctl eval "
+    hl.dispatch(hl.dsp.workspace.move({ workspace = $WS1, monitor = \"DP-1\" }))
+    hl.dispatch(hl.dsp.workspace.move({ workspace = $WS2, monitor = \"DP-2\" }))
+    hl.dispatch(hl.dsp.focus({ workspace = $WS }))
+  "
 else
-  hyprctl dispatch workspace "$WS"
+  hyprctl eval "hl.dispatch(hl.dsp.focus({ workspace = $WS }))"
 fi
