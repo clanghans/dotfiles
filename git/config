@@ -19,11 +19,24 @@
 	lg = log --graph --date=relative --pretty=tformat:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset'
 
 [core]
-	# Don't paginate output by default
-	pager = less
+	# Route diff/show/log -p output through delta
+	pager = delta
 
 	# Don't consider trailing space change as a cause for merge conflicts
 	whitespace = -trailing-space
+
+[interactive]
+	# Also use delta for `git add -p` etc.
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
+	side-by-side = false
+	hyperlinks = true
+	# Let delta infer syntax colors from the terminal's own background
+	# instead of hardcoding a theme (terminal theme is swapped by omarchy).
+	dark = true
 
 [diff]
 	# Use better, descriptive initials (c, i, w) instead of a/b.

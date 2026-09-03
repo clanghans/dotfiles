@@ -87,6 +87,10 @@ if (( $+commands[bat] )); then
   alias catp='bat -p'
 fi
 
+if (( $+commands[delta] )); then
+  alias diff='delta'
+fi
+
 alias chmodx='chmod u+x'
 
 # Hackxertools
