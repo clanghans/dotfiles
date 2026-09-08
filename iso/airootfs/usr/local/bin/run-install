@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Guided install: archinstall handles disk layout + user account
+# interactively (left out of archinstall.json on purpose, so nothing here
+# ever needs a stored password); everything else in archinstall.json is
+# predefined. Afterwards, chroot in and run this repo's install.sh --all as
+# the account just created.
+set -euo pipefail
+
+archinstall --config /root/archinstall.json --mountpoint /mnt
+
+echo
+read -rp "Username of the account you just created: " target_user
+
+arch-chroot /mnt runuser -u "${target_user}" -- \
+  git clone https://github.com/clanghans/dotfiles "/home/${target_user}/dotfiles"
+arch-chroot /mnt runuser -u "${target_user}" -- \
+  bash -c "cd /home/${target_user}/dotfiles && ./install.sh --all"
+
+echo "Done. Reboot into the new system whenever ready."

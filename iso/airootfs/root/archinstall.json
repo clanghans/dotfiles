@@ -1,0 +1,74 @@
+{
+  "archinstall-language": "English",
+  "audio_config": {
+    "audio": "pipewire"
+  },
+  "bootloader_config": {
+    "bootloader": "Systemd-boot",
+    "uki": false,
+    "removable": false
+  },
+  "hostname": "hyprarch",
+  "kernels": ["linux"],
+  "locale_config": {
+    "kb_layout": "us",
+    "sys_enc": "UTF-8",
+    "sys_lang": "en_US"
+  },
+  "network_config": {
+    "type": "nm"
+  },
+  "ntp": true,
+  "packages": [
+    "hyprland",
+    "uwsm",
+    "xdg-desktop-portal-hyprland",
+    "polkit-kde-agent",
+    "qt5-wayland",
+    "qt6-wayland",
+    "waybar",
+    "wofi",
+    "mako",
+    "hyprpaper",
+    "hypridle",
+    "hyprlock",
+    "hyprsunset",
+    "pipewire",
+    "pipewire-pulse",
+    "pipewire-alsa",
+    "wireplumber",
+    "bluez",
+    "bluez-utils",
+    "ghostty",
+    "alacritty",
+    "foot",
+    "tmux",
+    "neovim",
+    "zsh",
+    "yazi",
+    "ripgrep",
+    "fzf",
+    "chromium",
+    "nautilus",
+    "keepassxc",
+    "ttf-jetbrains-mono-nerd",
+    "noto-fonts",
+    "noto-fonts-emoji",
+    "git",
+    "jq",
+    "brightnessctl",
+    "xdg-user-dirs"
+  ],
+  "profile_config": {
+    "profile": {
+      "main": "Minimal"
+    }
+  },
+  "script": "guided",
+  "silent": false,
+  "swap": {
+    "enabled": true,
+    "algorithm": "zstd"
+  },
+  "timezone": "UTC"
+}
