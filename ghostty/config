@@ -1,5 +1,5 @@
-# Dynamic theme colors
-config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+# Static theme colors (see dotfiles/hyprland/theme/ghostty.conf)
+config-file = ?"~/.config/hypr/theme/ghostty.conf"
 
 # Font
 font-family = "JetBrains Mono Nerd Font Mono"
