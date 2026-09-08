@@ -1,0 +1,6 @@
+# AUR packages, one per line, "#" comments allowed.
+# Installed via `paru -S --needed - < packages.aur` (see install.sh), after
+# install.sh bootstraps paru itself if it's missing.
+
+obsidian
+typora

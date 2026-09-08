@@ -1,0 +1,60 @@
+# Official-repo packages for this setup, one per line, "#" comments allowed.
+# Installed via `pacman -S --needed - < packages.pacman` (see install.sh).
+# Base Arch (base, linux, linux-firmware, networkmanager, ...) comes from the
+# installer itself — this list is everything on top of that.
+
+# Hyprland + Wayland session
+hyprland
+uwsm
+xdg-desktop-portal-hyprland
+polkit-kde-agent
+qt5-wayland
+qt6-wayland
+
+# Bar / launcher / notifications / wallpaper / idle+lock
+waybar
+wofi
+mako
+hyprpaper
+hypridle
+hyprlock
+hyprsunset
+
+# Audio
+pipewire
+pipewire-pulse
+pipewire-alsa
+wireplumber
+
+# Bluetooth
+bluez
+bluez-utils
+
+# Terminals / shell / editor already configured in this repo
+ghostty
+alacritty
+foot
+tmux
+neovim
+zsh
+yazi
+ripgrep
+fzf
+
+# Apps already referenced in hyprland/scripts/startup.sh
+chromium
+nautilus
+keepassxc
+
+# Fonts: JetBrainsMono Nerd (terminal/icons), Noto Sans/Serif (broad Unicode
+# UI coverage) + Noto emoji (fontconfig/fonts.conf wires emoji as a fallback
+# for every family, so tofu boxes don't show up in terminals/waybar/wofi).
+ttf-jetbrains-mono-nerd
+noto-fonts
+noto-fonts-emoji
+
+# General tools
+git
+jq
+brightnessctl
+xdg-user-dirs

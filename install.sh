@@ -10,6 +10,9 @@ usage() {
   echo
   echo "Options:"
   echo "  --all              Install all dotfiles"
+  echo "  --packages         Install pacman packages (install/packages.pacman)"
+  echo "  --aur              Install AUR packages (install/packages.aur), bootstrapping paru if needed"
+  echo "  --services         Enable required system/user services"
   echo "  --shell            Install shell environment"
   echo "  --tmux             Install tmux config"
   echo "  --fonts            Install fonts"
@@ -69,6 +72,36 @@ check_prerequisits() {
     echo "git not available"
     exit 1
   fi
+}
+
+install_packages() {
+  grep -v '^\s*#' install/packages.pacman | grep -v '^\s*$' | sudo pacman -S --needed -
+}
+
+install_aur() {
+  if ! command -v paru &>/dev/null; then
+    echo "Installing paru..."
+    local build_dir
+    build_dir=$(mktemp -d)
+    git clone -q https://aur.archlinux.org/paru.git "${build_dir}"
+    (cd "${build_dir}" && makepkg -si --noconfirm)
+    rm -rf "${build_dir}"
+  fi
+
+  grep -v '^\s*#' install/packages.aur | grep -v '^\s*$' | paru -S --needed -
+}
+
+enable_services() {
+  local system_services=(NetworkManager bluetooth)
+  local user_services=(pipewire pipewire-pulse wireplumber)
+
+  for service in "${system_services[@]}"; do
+    sudo systemctl enable --now "${service}"
+  done
+
+  for service in "${user_services[@]}"; do
+    systemctl --user enable --now "${service}"
+  done
 }
 
 install_nix() {
@@ -154,6 +187,9 @@ install_fonts() {
     curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font}.tar.xz" | tar -xJf - -C "${font_dir}"
   done
 
+  mkdir -p "${XDG_CONFIG_HOME}/fontconfig"
+  create_symlink "fontconfig/fonts.conf" "${XDG_CONFIG_HOME}/fontconfig/fonts.conf"
+
   fc-cache -f -v
 
   # XModmap
@@ -209,6 +245,18 @@ main() {
     case "$1" in
     --all)
       install_all=true
+      shift
+      ;;
+    --packages)
+      install_specific+=("packages")
+      shift
+      ;;
+    --aur)
+      install_specific+=("aur")
+      shift
+      ;;
+    --services)
+      install_specific+=("services")
       shift
       ;;
     --tmux)
@@ -267,6 +315,9 @@ main() {
 
   # Install all dotfiles if --all is specified
   if [ "$install_all" = true ]; then
+    install_packages
+    install_aur
+    enable_services
     install_alacritty
     install_claude
     install_vibecockpit
@@ -282,6 +333,9 @@ main() {
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
       case "$section" in
+      packages) install_packages ;;
+      aur) install_aur ;;
+      services) enable_services ;;
       alacritty) install_alacritty ;;
       claude) install_claude ;;
       vibecockpit) install_vibecockpit ;;
