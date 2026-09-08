@@ -24,6 +24,7 @@ usage() {
   echo "  --yazi             Install yazi config"
   echo "  --claude           Install claude config"
   echo "  --vibecockpit      Install vibecockpit config"
+  echo "  --autologin        Autologin current user on tty1 (needed for Hyprland autostart)"
   echo
 }
 
@@ -100,7 +101,13 @@ enable_services() {
   done
 
   for service in "${user_services[@]}"; do
-    systemctl --user enable --now "${service}"
+    # --global writes the enablement symlink directly (no bus needed), so
+    # this also works when install.sh runs inside an arch-chroot with no
+    # systemd instance running (e.g. the ISO's run-install). It takes
+    # effect on the user's next login; also start it now when a user bus
+    # is actually reachable (plain interactive install.sh run).
+    systemctl --user --global enable "${service}"
+    systemctl --user start "${service}" 2>/dev/null || true
   done
 }
 
@@ -215,6 +222,16 @@ install_hyprland() {
   create_symlink "hyprland" "${XDG_CONFIG_HOME}/hypr"
 }
 
+install_autologin() {
+  local user="${USER:-$(whoami)}"
+  sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+  sudo tee /etc/systemd/system/getty@tty1.service.d/autologin.conf >/dev/null <<EOF
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --noreset --noclear --autologin ${user} - \$TERM
+EOF
+}
+
 install_claude() {
   mkdir -p "${HOME}/.claude/hooks" "${HOME}/bin"
   create_symlink "claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
@@ -303,6 +320,10 @@ main() {
       install_specific+=("vibecockpit")
       shift
       ;;
+    --autologin)
+      install_specific+=("autologin")
+      shift
+      ;;
     *)
       echo "Unknown option: ${1}"
       usage
@@ -329,6 +350,7 @@ main() {
     install_shell
     install_tmux
     install_yazi
+    install_autologin
   else
     # Install only the specified dotfiles
     for section in "${install_specific[@]}"; do
@@ -347,6 +369,7 @@ main() {
       shell) install_shell ;;
       tmux) install_tmux ;;
       yazi) install_yazi ;;
+      autologin) install_autologin ;;
       esac
     done
   fi

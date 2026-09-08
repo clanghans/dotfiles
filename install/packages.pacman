@@ -10,6 +10,7 @@ xdg-desktop-portal-hyprland
 polkit-kde-agent
 qt5-wayland
 qt6-wayland
+mesa
 
 # Bar / launcher / notifications / wallpaper / idle+lock
 waybar
