@@ -16,7 +16,7 @@ mesa
 waybar
 wofi
 mako
-hyprpaper
+swaybg
 hypridle
 hyprlock
 hyprsunset
@@ -31,6 +31,26 @@ wireplumber
 bluez
 bluez-utils
 
+# Screenshot / clipboard / input simulation
+grim
+slurp
+wl-clipboard
+hyprshot
+hyprpicker
+wtype
+cliphist
+tesseract
+tesseract-data-eng
+
+# Screen recording / media keys
+wf-recorder
+playerctl
+
+# Quick-access GUI panels (audio/bluetooth/network keybindings)
+pavucontrol
+blueman
+network-manager-applet
+
 # Terminals / shell / editor already configured in this repo
 ghostty
 alacritty
@@ -41,6 +61,12 @@ zsh
 yazi
 ripgrep
 fzf
+fd
+bat
+eza
+zoxide
+git-delta
+vivid
 
 # Apps already referenced in hyprland/scripts/startup.sh
 chromium
@@ -59,3 +85,12 @@ git
 jq
 brightnessctl
 xdg-user-dirs
+detox
+python-uv
+fastfetch
+btop
+tldr
+yq
+dust
+tree
+unzip

@@ -1,2 +1,3 @@
--- Extra autostart processes.
-o.exec_on_start("~/.config/hypr/scripts/startup.sh")
+hl.on("hyprland.start", function()
+  hl.exec_cmd("~/.config/hypr/scripts/startup.sh")
+end)

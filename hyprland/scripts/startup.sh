@@ -19,6 +19,20 @@ launch() {
     uwsm app -- "$bin" "$@" &
 }
 
+# Shell daemons: bar, notifications, wallpaper, clipboard history.
+launch waybar -c ~/.config/hypr/waybar/config.jsonc -s ~/.config/hypr/waybar/style.css
+launch mako -c ~/.config/hypr/mako/config.ini
+# Static wallpaper (no theme-switcher, same image hyprlock uses, see
+# theme/hyprlock-colors.conf). swaybg, not hyprpaper: hyprpaper 0.8.4 crashes
+# on this system (hyprtoolkit Wayland-backend init bug), and swaybg's plain
+# per-output image fill is all a static wallpaper needs anyway.
+launch swaybg -o DP-1 -i ~/.config/hypr/theme/wallpaper.png -m fill -o DP-2 -i ~/.config/hypr/theme/wallpaper.png -m fill
+if command -v cliphist >/dev/null 2>&1 && command -v wl-paste >/dev/null 2>&1; then
+    wl-paste --watch cliphist store &
+fi
+
+sleep 1
+
 # Launch your apps
 launch "${TERMINAL:-ghostty}"
 launch nautilus --new-window

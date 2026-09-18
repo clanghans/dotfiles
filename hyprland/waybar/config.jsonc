@@ -1,0 +1,50 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "spacing": 4,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["tray", "pulseaudio", "bluetooth", "network", "battery"],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": { "urgent": "", "default": "" }
+  },
+
+  "clock": {
+    "format": "{:%H:%M  %a %d %b}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": { "default": ["", "", ""] },
+    "on-click": "pavucontrol"
+  },
+
+  "bluetooth": {
+    "format": "",
+    "format-connected": " {num_connections}",
+    "on-click": "blueman-manager"
+  },
+
+  "network": {
+    "format-wifi": " {signalStrength}%",
+    "format-ethernet": "",
+    "format-disconnected": "⚠ disconnected",
+    "on-click": "nm-connection-editor"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "states": { "warning": 30, "critical": 15 }
+  },
+
+  "tray": {
+    "spacing": 8
+  }
+}

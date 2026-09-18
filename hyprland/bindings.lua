@@ -1,52 +1,23 @@
 -- Keep only your personal keybinding overrides here. Add new bindings or
 -- unbind defaults before replacing them.
 
--- hyprland.lua sets omarchy_default_bindings = false, so media/voxtype/
--- applications need restoring explicitly, and clipboard/tiling/utilities/
--- launcher come from our own vendored copies instead of Omarchy's.
-require("default.hypr.bindings.media")
-require("default.hypr.bindings.voxtype")
-require("default.hypr.require_optional").module("default.hypr.bindings.applications")
-
+require("hypr.media")
 require("hypr.clipboard")
 require("hypr.tiling")
 require("hypr.utilities")
 
 -- See current bindings and descriptions:
---   omarchy menu keybindings --print
+--   hyprctl binds
 
--- To disable every Omarchy default binding, set this in
--- ~/.config/hypr/hyprland.lua before require("default.hypr.omarchy"), then add
--- only the bindings you want below:
---   omarchy_default_bindings = false
-
--- To disable all preinstalled app/webapp bindings, set:
---   omarchy_preinstalled_bindings = false
-
--- Add a new binding.
--- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
-
--- Change an existing binding by unbinding it first, then binding the key again.
--- This example changes SUPER+SPACE from the launcher to the Omarchy root menu.
--- hl.unbind("SUPER + SPACE")
--- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
-
--- Disable a default binding without replacing it.
--- hl.unbind("SUPER + SHIFT + B")
-
--- Logitech MX Keys examples:
--- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
--- o.bind("SUPER + H", nil, "voxtype record toggle")
--- o.bind("SUPER + PERIOD", nil, "omarchy-shell shell toggle omarchy.emojis")
-
-o.bind("SUPER + M", "Swap monitors", "~/.config/hypr/scripts/swap_monitors.sh")
+hl.bind("SUPER + M", hl.dsp.exec_cmd("~/.config/hypr/scripts/swap_monitors.sh"), { description = "Swap monitors" })
 
 -- Pin SUPER+RETURN to ghostty instead of leaving it to xdg-terminal-exec's
 -- own pick (alacritty is also installed).
 hl.unbind("SUPER + RETURN")
-o.bind("SUPER + RETURN", "Terminal", "uwsm-app -- ${TERMINAL:-ghostty}")
+hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("uwsm-app -- ${TERMINAL:-ghostty}"), { description = "Terminal" })
 
-o.bind("SUPER + SHIFT + I", "Gemini", "omarchy-launch-webapp \"https://gemini.google.com\"")
+hl.bind("SUPER + SHIFT + I", hl.dsp.exec_cmd('uwsm-app -- ${BROWSER:-chromium} --app="https://gemini.google.com"'),
+  { description = "Gemini" })
 
 -- Override workspace switches to revert any monitor swap before switching.
 -- Bind by physical key position (code:10-18 = number row keys 1-9), so this
@@ -55,9 +26,9 @@ for i = 10, 18 do
   hl.unbind("SUPER + code:" .. i)
 end
 for i, code in ipairs({ 10, 11, 12, 13, 14, 15, 16, 17, 18 }) do
-  o.bind(
+  hl.bind(
     "SUPER + code:" .. code,
-    "Switch to workspace " .. i,
-    "~/.config/hypr/scripts/workspace_switch.sh " .. i
+    hl.dsp.exec_cmd("~/.config/hypr/scripts/workspace_switch.sh " .. i),
+    { description = "Switch to workspace " .. i }
   )
 end

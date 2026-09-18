@@ -42,7 +42,7 @@ local function universal_clipboard_shortcut(default_mods, default_key, terminal_
   end
 end
 
-o.bind("SUPER + C", "Universal copy", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert"))
-o.bind("SUPER + V", "Universal paste", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"))
-o.bind("SUPER + X", "Universal cut", send_shortcut_once("CTRL", "X"))
-o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy-shell shell toggle omarchy.clipboard")
+hl.bind("SUPER + C", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert"), { description = "Universal copy" })
+hl.bind("SUPER + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"), { description = "Universal paste" })
+hl.bind("SUPER + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
+hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/clipboard_menu.sh"), { description = "Clipboard manager" })
