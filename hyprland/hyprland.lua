@@ -3,9 +3,13 @@
 -- Omarchy's bootstrap keeps path setup out of this user config.
 dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/bootstrap.lua")
 
--- Disable all Omarchy default bindings. Add your own in hypr/bindings.lua.
--- omarchy_default_bindings = false
---
+-- Own the clipboard/tiling/utilities/launcher bindings ourselves (vendored
+-- into hypr/clipboard.lua, hypr/tiling.lua, hypr/utilities.lua) instead of
+-- Omarchy's copies, so they don't move or change on an Omarchy package
+-- update. hypr/bindings.lua restores media/voxtype/applications from
+-- Omarchy and requires our vendored files.
+omarchy_default_bindings = false
+
 -- Or disable only bindings for Omarchy's preinstalled apps/web apps while
 -- keeping core window-manager bindings:
 -- omarchy_preinstalled_bindings = false

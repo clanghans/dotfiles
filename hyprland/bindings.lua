@@ -1,6 +1,17 @@
 -- Keep only your personal keybinding overrides here. Add new bindings or
 -- unbind defaults before replacing them.
 
+-- hyprland.lua sets omarchy_default_bindings = false, so media/voxtype/
+-- applications need restoring explicitly, and clipboard/tiling/utilities/
+-- launcher come from our own vendored copies instead of Omarchy's.
+require("default.hypr.bindings.media")
+require("default.hypr.bindings.voxtype")
+require("default.hypr.require_optional").module("default.hypr.bindings.applications")
+
+require("hypr.clipboard")
+require("hypr.tiling")
+require("hypr.utilities")
+
 -- See current bindings and descriptions:
 --   omarchy menu keybindings --print
 
@@ -30,9 +41,10 @@
 
 o.bind("SUPER + M", "Swap monitors", "~/.config/hypr/scripts/swap_monitors.sh")
 
--- Omarchy 4 defaults SUPER+SHIFT+W to Omawrite; keep it on Typora instead.
-hl.unbind("SUPER + SHIFT + W")
-o.bind("SUPER + SHIFT + W", "Typora", "uwsm-app -- typora --enable-wayland-ime")
+-- Pin SUPER+RETURN to ghostty instead of leaving it to xdg-terminal-exec's
+-- own pick (alacritty is also installed).
+hl.unbind("SUPER + RETURN")
+o.bind("SUPER + RETURN", "Terminal", "uwsm-app -- ${TERMINAL:-ghostty}")
 
 o.bind("SUPER + SHIFT + I", "Gemini", "omarchy-launch-webapp \"https://gemini.google.com\"")
 
