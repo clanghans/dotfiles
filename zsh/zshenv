@@ -7,12 +7,20 @@ export XDG_STATE_HOME=$HOME/.local/state
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
-# PATH
-export PATH=${HOME}/.nix-profile/bin:${PATH}:
-export PATH=${PATH}:${HOME}/.local/bin:
-export PATH=${PATH}:${HOME}/go/bin:
-export PATH=${PATH}:${XDG_CONFIG_HOME}/cargo/bin:
-export PATH=${PATH}:${GEM_HOME}/bin:
+# PATH — one entry per line. zsh ties the colon-joined $PATH to the
+# array $path, so assigning the array updates the scalar. `typeset -U`
+# marks the array unique: duplicates (e.g. entries already in the
+# inherited PATH) are dropped, keeping only the first occurrence.
+typeset -U path
+path=(
+  $path
+  "$HOME/.nix-profile/bin"
+  "$HOME/.local/bin"
+  "$HOME/go/bin"
+  "$XDG_CONFIG_HOME/cargo/bin"
+  "$GEM_HOME/bin"
+)
+export PATH
 
 export MANPAGER="sh -c 'col -bx | bat --language=man --style=plain --paging=always'"
 export MANROFFOPT='-c'
@@ -28,7 +36,9 @@ export REDO_HISTORY_PATH=~/.zhistory
 export BAT_THEME="Dracula"
 
 # LS_COLORS (used by eza, fzf-tab completions)
-export LS_COLORS="$(vivid generate tokyonight-night)"
+# Declare and assign separately so `set -u` doesn't trip on the value.
+LS_COLORS="$(vivid generate tokyonight-night)"
+export LS_COLORS
 
 # RIPGREP
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/config"

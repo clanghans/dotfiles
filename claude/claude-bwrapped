@@ -27,85 +27,91 @@ set -euo pipefail
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
 #   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot
 
-ulimit -t 600          # CPU time (seconds)
-ulimit -v $((20<<20))  # 20 GiB virtual memory
-ulimit -u 1000         # Max processes
-ulimit -f 1048576      # Max file size (512 MiB; unit is 512-byte blocks)
+ulimit -t 600           # CPU time (seconds)
+ulimit -v $((20 << 20)) # 20 GiB virtual memory
+ulimit -u 1000          # Max processes
+ulimit -f 1048576       # Max file size (512 MiB; unit is 512-byte blocks)
 
 mkdir -p "$HOME/.cache/claude"
 touch "$HOME/.claude.json"
 
-# Pass through proxy and API endpoint vars if set in the outer environment.
-declare -a proxy_envs=()
-for var in http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY ANTHROPIC_BASE_URL; do
-    [[ -n "${!var+x}" ]] && proxy_envs+=(--setenv "$var" "${!var}")
+# Pass through selected vars from the outer environment if set. --clearenv
+# drops everything, so any var the sandbox needs (proxy, API endpoints, the
+# Azure DevOps Python feed URLs uv resolves) must be re-injected here. Values
+# live in the outer shell or ~/.secrets; nothing is hardcoded in this script.
+declare -a passthrough_envs=()
+for var in http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY \
+  ANTHROPIC_BASE_URL \
+  UV_INDEX_URL UV_EXTRA_INDEX_URL; do
+  [[ -n "${!var+x}" ]] && passthrough_envs+=(--setenv "$var" "${!var}")
 done
 
 # Parse ~/.secrets and build --setenv args for each KEY=value line.
 # The file itself is not bound — only the values are injected.
 declare -a secret_envs=()
 if [[ -f "$HOME/.secrets" ]]; then
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        line="${line#export }"
-        [[ "$line" =~ ^[[:space:]]*# ]] && continue
-        [[ -z "${line//[[:space:]]/}" ]] && continue
-        key="${line%%=*}"
-        value="${line#*=}"
-        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
-        # Strip surrounding quotes
-        if [[ "$value" =~ ^\"(.*)\"$ ]] || [[ "$value" =~ ^\'(.*)\'$ ]]; then
-            value="${BASH_REMATCH[1]}"
-        fi
-        secret_envs+=(--setenv "$key" "$value")
-    done < "$HOME/.secrets"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line#export }"
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line//[[:space:]]/}" ]] && continue
+    key="${line%%=*}"
+    value="${line#*=}"
+    [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+    # Strip surrounding quotes
+    if [[ "$value" =~ ^\"(.*)\"$ ]] || [[ "$value" =~ ^\'(.*)\'$ ]]; then
+      value="${BASH_REMATCH[1]}"
+    fi
+    secret_envs+=(--setenv "$key" "$value")
+  done <"$HOME/.secrets"
 fi
 
 exec bwrap \
-    --new-session \
-    --die-with-parent \
-    --unshare-all \
-    --share-net \
-    --cap-drop all \
-    --ro-bind /usr /usr \
-    --ro-bind /etc /etc \
-    --ro-bind /bin /bin \
-    --ro-bind /sbin /sbin \
-    --ro-bind-try /lib /lib \
-    --ro-bind-try /lib64 /lib64 \
-    --ro-bind /nix /nix \
-    --tmpfs /tmp \
-    --tmpfs /var/tmp \
-    --proc /proc \
-    --dev /dev \
-    --tmpfs "$HOME" \
-    --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
-    --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
-    --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv" \
-    --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
-    --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
-    --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
-    --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
-    --ro-bind "$HOME/bin" "$HOME/bin" \
-    --bind-try "$HOME/.claude.json" "$HOME/.claude.json" \
-    --bind "$HOME/.claude" "$HOME/.claude" \
-    --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
-    --dir "$HOME/.cache" \
-    --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
-    --bind-try "$HOME/ws" "$HOME/ws" \
-    --bind "$(pwd)" "$(pwd)" \
-    --chdir "$(pwd)" \
-    --hostname sandbox \
-    --clearenv \
-    --setenv HOME "$HOME" \
-    --setenv HOSTNAME "$HOSTNAME" \
-    --setenv USER "$(id -un)" \
-    --setenv LOGNAME "$(id -un)" \
-    --setenv SHELL "${SHELL:-/bin/bash}" \
-    --setenv TERM "${TERM:-xterm-256color}" \
-    --setenv XDG_CACHE_HOME "$HOME/.cache" \
-    --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
-    --setenv LANG "${LANG:-C.UTF-8}" \
-    --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
-    "${proxy_envs[@]}" \
-    "${secret_envs[@]}" \
-    -- claude --dangerously-skip-permissions "$@"
+  --new-session \
+  --die-with-parent \
+  --unshare-all \
+  --share-net \
+  --cap-drop all \
+  --ro-bind /usr /usr \
+  --ro-bind /etc /etc \
+  --ro-bind /bin /bin \
+  --ro-bind /sbin /sbin \
+  --ro-bind-try /lib /lib \
+  --ro-bind-try /lib64 /lib64 \
+  --ro-bind /nix /nix \
+  --tmpfs /tmp \
+  --tmpfs /var/tmp \
+  --proc /proc \
+  --dev /dev \
+  --tmpfs "$HOME" \
+  --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
+  --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
+  --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv" \
+  --ro-bind-try "$HOME/.local/share/claude" "$HOME/.local/share/claude" \
+  --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
+  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
+  --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
+  --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
+  --ro-bind "$HOME/bin" "$HOME/bin" \
+  --bind-try "$HOME/.claude.json" "$HOME/.claude.json" \
+  --bind "$HOME/.claude" "$HOME/.claude" \
+  --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
+  --dir "$HOME/.cache" \
+  --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
+  --bind-try "$HOME/ws" "$HOME/ws" \
+  --bind "$(pwd)" "$(pwd)" \
+  --chdir "$(pwd)" \
+  --hostname sandbox \
+  --clearenv \
+  --setenv HOME "$HOME" \
+  --setenv HOSTNAME "$HOSTNAME" \
+  --setenv USER "$(id -un)" \
+  --setenv LOGNAME "$(id -un)" \
+  --setenv SHELL "${SHELL:-/bin/bash}" \
+  --setenv TERM "${TERM:-xterm-256color}" \
+  --setenv XDG_CACHE_HOME "$HOME/.cache" \
+  --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
+  --setenv LANG "${LANG:-C.UTF-8}" \
+  --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
+  "${passthrough_envs[@]}" \
+  "${secret_envs[@]}" \
+  -- $HOME/.local/bin/claude --dangerously-skip-permissions "$@"

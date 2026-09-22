@@ -126,3 +126,6 @@ These rules apply to **all written output**: chat responses, code comments, docu
 - No conclusion paragraph that re-summarizes what was just said.
 
 @RTK.md
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.

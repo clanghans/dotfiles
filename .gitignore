@@ -48,6 +48,12 @@ hyprland/.cache/
 hyprland/.runtime/
 
 # =========================
+# Graphify output
+# =========================
+
+graphify-out/
+
+# =========================
 # Script/runtime leftovers
 # =========================
 

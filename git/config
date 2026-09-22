@@ -24,6 +24,7 @@
 
 	# Don't consider trailing space change as a cause for merge conflicts
 	whitespace = -trailing-space
+	excludesfile = /home/lcn2abt/.config/git/ignore
 
 [interactive]
 	# Also use delta for `git add -p` etc.

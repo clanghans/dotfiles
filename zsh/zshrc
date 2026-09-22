@@ -21,7 +21,7 @@ zinit ice wait lucid
 
 # Completions and autosuggestions (turbo mode)
 zinit wait lucid for \
-  atload"zicompinit; zicdreplay" blockf \
+  atload"zicompinit -u; zicdreplay" blockf \
   zsh-users/zsh-completions \
   atload"_zsh_autosuggest_start" \
   zsh-users/zsh-autosuggestions

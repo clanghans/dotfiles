@@ -167,6 +167,7 @@ install_shell() {
 
   mkdir -p "${XDG_CONFIG_HOME}/git"
   create_symlink "git/config" "${XDG_CONFIG_HOME}/git/config"
+  create_symlink "git/ignore" "${XDG_CONFIG_HOME}/git/ignore"
 
   create_symlink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
 

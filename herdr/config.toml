@@ -68,8 +68,8 @@ description = "Recent workspace"
 key = "prefix+ctrl+y"
 type = "popup"
 command = "herdr-snaglord"
-width = "60%"
-height = "60%"
+width = "80%"
+height = "80%"
 
 [ui]
 # Visual preferences
