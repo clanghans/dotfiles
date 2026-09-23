@@ -12,7 +12,8 @@ rtk git status          rtk git diff            rtk git log
 
 # Files & Search (60-75% savings)
 rtk ls <path>           rtk read <file>         rtk grep <pattern>
-rtk find <pattern>      rtk diff <file>
+rtk find <pattern>      rtk diff <file>         rtk rg <pattern>
+rtk tree <path>         rtk wc <file>           rtk wget <url>
 
 # Test (90-99% savings) — shows failures only
 rtk pytest tests/       rtk cargo test          rtk test <cmd>
@@ -33,10 +34,12 @@ rtk docker ps           rtk kubectl get         rtk docker logs <c>
 
 # Package managers (70-90% savings)
 rtk pip list            rtk pnpm install        rtk npm run <script>
+rtk uv run <script>
 ```
 
 ## Rules
 - In command chains, prefix each segment: `rtk git add . && rtk git commit -m "msg"`
 - For debugging, use raw command without rtk prefix
 - `rtk proxy <cmd>` runs command without filtering but tracks usage
+- `fd` has no rtk filter (only `find`/`rg` are wrapped) — use `rtk find` for the token savings, or call `fd` bare
 <!-- /headroom:rtk-instructions -->
