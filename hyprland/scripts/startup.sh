@@ -46,8 +46,7 @@ LAUNCH_OR_FOCUS="$(dirname "$0")/launch_or_focus.sh"
 BROWSER_BIN="${BROWSER:-chromium}"
 
 if command -v "$BROWSER_BIN" >/dev/null 2>&1; then
-    "$LAUNCH_OR_FOCUS" chrome-chatgpt "$BROWSER_BIN" --app="https://chatgpt.com" &
-    "$LAUNCH_OR_FOCUS" chrome-gemini "$BROWSER_BIN" --app="https://gemini.google.com" &
+    "$LAUNCH_OR_FOCUS" chrome-claude "$BROWSER_BIN" --app="https://claude.ai" &
     "$LAUNCH_OR_FOCUS" chrome-web.whatsapp "$BROWSER_BIN" --app="https://web.whatsapp.com/" &
     "$LAUNCH_OR_FOCUS" chrome-mail.google.com "$BROWSER_BIN" --app="https://mail.google.com/mail/u/0/#inbox" &
 else
