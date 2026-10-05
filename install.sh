@@ -93,8 +93,11 @@ install_aur() {
 }
 
 enable_services() {
-  local system_services=(NetworkManager bluetooth)
+  local system_services=(NetworkManager bluetooth kvm-access)
   local user_services=(pipewire pipewire-pulse wireplumber)
+
+  sudo cp systemd/kvm-access.service /etc/systemd/system/kvm-access.service
+  sudo systemctl daemon-reload
 
   for service in "${system_services[@]}"; do
     sudo systemctl enable --now "${service}"
@@ -128,6 +131,9 @@ install_tmux() {
   mkdir -p "${tmux_conf_dir}/plugins"
   create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
+
+  # Bootstrap tmux-yank for clipboard support across Wayland/X11/SSH
+  git_clone_or_update "https://github.com/tmux-plugins/tmux-yank" "${tmux_conf_dir}/plugins/tmux-yank"
 
   if ! command -v tmux-snaglord &>/dev/null; then
     if command -v cargo &>/dev/null; then
