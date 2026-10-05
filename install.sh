@@ -132,8 +132,9 @@ install_tmux() {
   create_symlink "tmux/tmux.conf" "${tmux_conf_dir}/tmux.conf"
   git_clone_or_update "https://github.com/tmux-plugins/tpm" "${tmux_conf_dir}/plugins/tpm"
 
-  # Bootstrap tmux-yank for clipboard support across Wayland/X11/SSH
-  git_clone_or_update "https://github.com/tmux-plugins/tmux-yank" "${tmux_conf_dir}/plugins/tmux-yank"
+  # tpm installs plugins when tmux loads the config or via tpm_install_plugins key binding
+  # Plugins are declared in tmux.conf; first tmux start will auto-install them
+  echo "tpm and plugins will auto-install on first tmux start"
 
   if ! command -v tmux-snaglord &>/dev/null; then
     if command -v cargo &>/dev/null; then
