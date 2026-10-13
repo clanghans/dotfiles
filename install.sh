@@ -23,6 +23,7 @@ usage() {
   echo "  --herdr            Install herdr config"
   echo "  --yazi             Install yazi config"
   echo "  --claude           Install claude config"
+  echo "  --pi               Install pi config"
   echo "  --vibecockpit      Install vibecockpit config"
   echo "  --autologin        Autologin current user on tty1 (needed for Hyprland autostart)"
   echo
@@ -256,6 +257,12 @@ install_claude() {
   fi
 }
 
+install_pi() {
+  mkdir -p "${HOME}/.pi"
+  create_symlink "pi/models.json" "${HOME}/.pi/agent/models.json"
+  create_symlink "pi/pi-bwrapped" "${HOME}/.local/bin/pi-bwrapped"
+}
+
 main() {
   # Parse arguments
   if [ "$#" -eq 0 ]; then
@@ -324,6 +331,10 @@ main() {
       install_specific+=("claude")
       shift
       ;;
+    --pi)
+      install_specific+=("pi")
+      shift
+      ;;
     --vibecockpit)
       install_specific+=("vibecockpit")
       shift
@@ -349,6 +360,7 @@ main() {
     enable_services
     install_alacritty
     install_claude
+    install_pi
     install_vibecockpit
     install_fonts
     install_ghostty
@@ -368,6 +380,7 @@ main() {
       services) enable_services ;;
       alacritty) install_alacritty ;;
       claude) install_claude ;;
+      pi) install_pi ;;
       vibecockpit) install_vibecockpit ;;
       fonts) install_fonts ;;
       ghostty) install_ghostty ;;

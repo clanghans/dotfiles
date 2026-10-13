@@ -1,0 +1,278 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "bbm": {
+      "baseUrl": "https://litellm.orchestration.bbm.ai.bosch.com/v1",
+      "api": "openai-completions",
+      "apiKey": "$BBM_LITELLM_API_KEY",
+      "models": [
+        {
+          "id": "claude-opus-5-5",
+          "name": "Claude Opus 5.5 (BBM)",
+          "contextWindow": 200000,
+          "maxTokens": 64000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 4, "output": 20, "cacheRead": 0.2, "cacheWrite": 5}
+        },
+        {
+          "id": "claude-sonnet-5-5",
+          "name": "Claude Sonnet 5.5 (BBM)",
+          "contextWindow": 200000,
+          "maxTokens": 64000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2, "output": 10, "cacheRead": 0.1, "cacheWrite": 2.5}
+        },
+        {
+          "id": "claude-sonnet-5",
+          "name": "Claude Sonnet 5 (BBM)",
+          "contextWindow": 200000,
+          "maxTokens": 64000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2, "output": 10, "cacheRead": 0.2, "cacheWrite": 2.5}
+        },
+        {
+          "id": "claude-haiku-5-5",
+          "name": "Claude Haiku 5.5 (BBM)",
+          "contextWindow": 200000,
+          "maxTokens": 64000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.1, "output": 0.5, "cacheRead": 0.05, "cacheWrite": 0.625}
+        },
+        {
+          "id": "gpt-6-luna",
+          "name": "GPT-6 Luna (BBM)",
+          "contextWindow": 922000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 0.1, "output": 0.5, "cacheRead": 0.01, "cacheWrite": 0.125}
+        },
+        {
+          "id": "gpt-6-sol",
+          "name": "GPT-6 Sol (BBM)",
+          "contextWindow": 922000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2, "output": 10, "cacheRead": 0.2, "cacheWrite": 2.5}
+        },
+        {
+          "id": "gpt-5.6-luna",
+          "name": "GPT-5.6 Luna (BBM)",
+          "contextWindow": 922000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 0.2, "output": 1.2, "cacheRead": 0.02, "cacheWrite": 0.25}
+        },
+        {
+          "id": "gpt-5.6-terra",
+          "name": "GPT-5.6 Terra (BBM)",
+          "contextWindow": 922000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2, "output": 12, "cacheRead": 0.2, "cacheWrite": 2.5}
+        },
+        {
+          "id": "gpt-5-nano",
+          "name": "GPT-5 Nano (BBM)",
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.05, "output": 0.4, "cacheRead": 0.005, "cacheWrite": 0}
+        },
+        {
+          "id": "gpt-5-mini",
+          "name": "GPT-5 Mini (BBM)",
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.25, "output": 2, "cacheRead": 0.025, "cacheWrite": 0}
+        },
+        {
+          "id": "gpt-5",
+          "name": "GPT-5 (BBM)",
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 1.25, "output": 10, "cacheRead": 0.125, "cacheWrite": 0}
+        },
+        {
+          "id": "gpt-5.4-nano",
+          "name": "GPT-5.4 Nano (BBM)",
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.2, "output": 1.25, "cacheRead": 0.02, "cacheWrite": 0}
+        },
+        {
+          "id": "gpt-5.4-mini",
+          "name": "GPT-5.4 Mini (BBM)",
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.75, "output": 4.5, "cacheRead": 0.075, "cacheWrite": 0}
+        },
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4 (BBM)",
+          "contextWindow": 922000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2.5, "output": 15, "cacheRead": 0.25, "cacheWrite": 0}
+        },
+        {
+          "id": "gemini-3.7-flash",
+          "name": "Gemini 3.7 Flash (BBM)",
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.75, "output": 3.75, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "gemini-3.5-flash-lite",
+          "name": "Gemini 3.5 Flash Lite (BBM)",
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.3, "output": 2.5, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "gemini-2.5-flash-lite",
+          "name": "Gemini 2.5 Flash Lite (BBM)",
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 0.25, "output": 1, "cacheRead": 0.025, "cacheWrite": 0.3125}
+        },
+        {
+          "id": "deepseek-v4-flash",
+          "name": "DeepSeek V4 Flash (BBM)",
+          "contextWindow": 1000000,
+          "maxTokens": 393216,
+          "input": ["text"],
+          "output": ["text"],
+          "cost": {"input": 0.19, "output": 0.51, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "deepseek-v4-pro",
+          "name": "DeepSeek V4 Pro (BBM)",
+          "contextWindow": 1000000,
+          "maxTokens": 393216,
+          "input": ["text"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 1.74, "output": 3.48, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "codestral-2",
+          "name": "Codestral 2 (BBM)",
+          "contextWindow": 256000,
+          "maxTokens": 32768,
+          "input": ["text"],
+          "output": ["text"],
+          "cost": {"input": 0.3, "output": 0.9, "cacheRead": 0, "cacheWrite": 0}
+        }
+      ]
+    },
+    "esy": {
+      "baseUrl": "https://litellm.etas-llm-farm.dev/v1",
+      "api": "openai-completions",
+      "apiKey": "$ESY_LITELLM_API_KEY",
+      "headers": {
+        "x-headroom-compress": "true"
+      },
+      "models": [
+        {
+          "id": "claude-opus-5-5",
+          "name": "Claude Opus 5.5 (ESY)",
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 4.59, "output": 22.94, "cacheRead": 0.23, "cacheWrite": 5.73}
+        },
+        {
+          "id": "claude-sonnet-5-5",
+          "name": "Claude Sonnet 5.5 (ESY)",
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2.29, "output": 11.47, "cacheRead": 0.23, "cacheWrite": 2.87}
+        },
+        {
+          "id": "claude-sonnet-5",
+          "name": "Claude Sonnet 5 (ESY)",
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 2.29, "output": 11.47, "cacheRead": 0.23, "cacheWrite": 2.87}
+        },
+        {
+          "id": "claude-haiku-4-5",
+          "name": "Claude Haiku 4.5 (ESY)",
+          "contextWindow": 200000,
+          "maxTokens": 64000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 1.15, "output": 5.73, "cacheRead": 0.11, "cacheWrite": 1.43}
+        },
+        {
+          "id": "claude-glm-5",
+          "name": "Claude GLM 5 (ESY)",
+          "contextWindow": 200000,
+          "maxTokens": 128000,
+          "input": ["text"],
+          "output": ["text"],
+          "cost": {"input": 1.04, "output": 3.34, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "claude-deepseek-v4-pro",
+          "name": "Claude DeepSeek V4 Pro (ESY)",
+          "contextWindow": 1000000,
+          "maxTokens": 384000,
+          "input": ["text"],
+          "output": ["text"],
+          "reasoning": true,
+          "cost": {"input": 1.74, "output": 3.48, "cacheRead": 0.15, "cacheWrite": 0}
+        },
+        {
+          "id": "claude-coding-autorouter",
+          "name": "Claude Coding Autorouter (ESY)",
+          "contextWindow": 200000,
+          "maxTokens": 128000,
+          "input": ["text", "image"],
+          "output": ["text"],
+          "cost": {"input": 2.29, "output": 11.47, "cacheRead": 0.23, "cacheWrite": 2.87}
+        }
+      ]
+    }
+  }
+}
