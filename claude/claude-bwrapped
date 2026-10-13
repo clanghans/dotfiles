@@ -41,7 +41,7 @@ touch "$HOME/.claude.json"
 # live in the outer shell or ~/.secrets; nothing is hardcoded in this script.
 declare -a passthrough_envs=()
 for var in http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY \
-  ANTHROPIC_BASE_URL \
+  ANTHROPIC_BASE_URL CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY \
   UV_INDEX_URL UV_EXTRA_INDEX_URL; do
   [[ -n "${!var+x}" ]] && passthrough_envs+=(--setenv "$var" "${!var}")
 done
@@ -92,6 +92,7 @@ exec bwrap \
   --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
   --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
   --ro-bind "$HOME/bin" "$HOME/bin" \
+  --ro-bind-try "$HOME/.pi" "$HOME/.pi" \
   --bind-try "$HOME/.claude.json" "$HOME/.claude.json" \
   --bind "$HOME/.claude" "$HOME/.claude" \
   --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
