@@ -262,27 +262,25 @@ install_pi() {
   create_symlink "${DOTFILES_DIR}/pi/models.json" "${HOME}/.pi/agent/models.json"
   create_symlink "${DOTFILES_DIR}/pi/pi-bwrapped" "${HOME}/.local/bin/pi-bwrapped"
 
-  # Create settings.json with extensions and skills paths
-  if [ ! -f "${HOME}/.pi/agent/settings.json" ]; then
-    cat > "${HOME}/.pi/agent/settings.json" << 'EOF'
+  # Generate settings.json with dynamic dotfiles path
+  cat > "${HOME}/.pi/agent/settings.json" << EOF
 {
-  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "\$schema": "https://pi.dev/schemas/settings.schema.json",
   "defaultModel": "claude-sonnet-5-5",
   "defaultProvider": "esy",
   "defaultThinkingLevel": "medium",
   "shellPath": "/bin/zsh",
   "extensions": [
-    "~/ws/github/dotfiles/pi/extensions/rtk.ts",
-    "~/ws/github/dotfiles/pi/extensions/ponytail.ts"
+    "${DOTFILES_DIR}/pi/extensions/rtk.ts",
+    "${DOTFILES_DIR}/pi/extensions/ponytail.ts"
   ],
   "skills": [
-    "~/ws/github/dotfiles/pi/skills/*"
+    "${DOTFILES_DIR}/pi/skills/*"
   ],
   "theme": "dark",
   "tuiMode": "fullscreen"
 }
 EOF
-  fi
 }
 
 main() {

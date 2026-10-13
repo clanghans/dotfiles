@@ -1,0 +1,16 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "defaultModel": "claude-sonnet-5-5",
+  "defaultProvider": "esy",
+  "defaultThinkingLevel": "medium",
+  "shellPath": "/bin/zsh",
+  "extensions": [
+    "<DOTFILES_DIR>/pi/extensions/rtk.ts",
+    "<DOTFILES_DIR>/pi/extensions/ponytail.ts"
+  ],
+  "skills": [
+    "<DOTFILES_DIR>/pi/skills/*"
+  ],
+  "theme": "dark",
+  "tuiMode": "fullscreen"
+}
