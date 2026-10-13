@@ -1,0 +1,12 @@
+[Unit]
+Description=Open /dev/kvm access for KVM support
+After=systemd-modules-load.service
+Wants=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sh -c 'modprobe kvm 2>/dev/null; test -e /dev/kvm && chmod 0666 /dev/kvm'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

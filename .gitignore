@@ -78,4 +78,5 @@ git/credentials.local
 zsh/zsh/work.zsh
 .claude/plans/
 *.settings.local.json
+settings.local.json
 claude/skills/graphify/.graphify_version
