@@ -76,3 +76,6 @@ git/credentials.local
 
 # Work-specific shell config (contains internal infra details)
 zsh/zsh/work.zsh
+.claude/plans/
+*.settings.local.json
+claude/skills/graphify/.graphify_version
