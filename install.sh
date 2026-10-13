@@ -270,6 +270,7 @@ install_pi() {
   "defaultModel": "claude-sonnet-5-5",
   "defaultProvider": "esy",
   "defaultThinkingLevel": "medium",
+  "shellPath": "/bin/zsh",
   "extensions": [
     "~/ws/github/dotfiles/pi/extensions/rtk.ts",
     "~/ws/github/dotfiles/pi/extensions/ponytail.ts"
