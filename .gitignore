@@ -80,3 +80,4 @@ zsh/zsh/work.zsh
 *.settings.local.json
 settings.local.json
 claude/skills/graphify/.graphify_version
+pi/skills/graphify/.graphify_version
