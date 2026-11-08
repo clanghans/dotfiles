@@ -5,9 +5,6 @@
 
 [init]
 	defaultBranch = main
-
-[credential]
-	helper = gh
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential
@@ -94,3 +91,6 @@
 	ui = auto
 [include]
   path = work
+[credential "https://dev.azure.com"]
+	helper = 
+	helper = git-credential-azure-devops

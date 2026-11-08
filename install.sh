@@ -1,5 +1,6 @@
 #!/bin/bash
 
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 LOCAL_BIN=${HOME}/.local/bin
 
@@ -34,11 +35,20 @@ create_symlink() {
   local source_file="$1"
   local target_file="$2"
 
+  # Normalize duplicate separators in constructed absolute paths.
+  source_file="$(printf '%s' "$source_file" | sed 's#//*#/#g')"
+
   # Expand ~ to the full home directory path
   target_file="${target_file/#\~/$HOME}"
 
   # Check if the symlink already exists and points to the correct file
-  if [ -L "$target_file" ] && [ "$(readlink "$target_file")" == "$(pwd)/$source_file" ]; then
+  if [[ "$source_file" = /* ]]; then
+    local source_path="$source_file"
+  else
+    local source_path="$(pwd)/$source_file"
+  fi
+
+  if [ -L "$target_file" ] && [ "$(readlink "$target_file")" == "$source_path" ]; then
     echo "Symlink for $source_file already exists, skipping."
   else
     # Backup existing file if necessary
@@ -48,8 +58,8 @@ create_symlink() {
     fi
 
     # Create the symlink
-    echo "Linking $(pwd)/$source_file to $target_file"
-    ln -sf "$(pwd)/$source_file" "$target_file"
+    echo "Linking $source_path to $target_file"
+    ln -sfn "$source_path" "$target_file"
   fi
 }
 
@@ -170,12 +180,20 @@ install_shell() {
   create_symlink "zsh/zshenv" "${HOME}/.zshenv"
   create_symlink "zsh/zsh" "${HOME}/.zsh"
 
+  # Private bin dir (also mounted ro in the bwrapped sandboxes): name the
+  # bazelisk binary "bazel" so it works without a shell alias.
+  mkdir -p "${HOME}/bin"
+  create_symlink "${HOME}/.nix-profile/bin/bazelisk" "${HOME}/bin/bazel"
+
   mkdir -p "${XDG_CONFIG_HOME}/ripgrep"
   create_symlink "ripgrep/config" "${XDG_CONFIG_HOME}/ripgrep/config"
 
   mkdir -p "${XDG_CONFIG_HOME}/git"
   create_symlink "git/config" "${XDG_CONFIG_HOME}/git/config"
   create_symlink "git/ignore" "${XDG_CONFIG_HOME}/git/ignore"
+
+  mkdir -p "${LOCAL_BIN}"
+  create_symlink "git/credential-azure-devops" "${LOCAL_BIN}/git-credential-azure-devops"
 
   create_symlink "lazyvim" "${XDG_CONFIG_HOME}/nvim"
 
@@ -260,27 +278,16 @@ install_claude() {
 install_pi() {
   mkdir -p "${HOME}/.pi/agent"
   create_symlink "${DOTFILES_DIR}/pi/models.json" "${HOME}/.pi/agent/models.json"
+  create_symlink "${DOTFILES_DIR}/pi/skills" "${HOME}/.pi/agent/skills"
+  create_symlink "${DOTFILES_DIR}/pi/mcp.json" "${HOME}/.pi/agent/mcp.json"
   create_symlink "${DOTFILES_DIR}/pi/pi-bwrapped" "${HOME}/.local/bin/pi-bwrapped"
 
-  # Generate settings.json with dynamic dotfiles path
-  cat > "${HOME}/.pi/agent/settings.json" << EOF
-{
-  "\$schema": "https://pi.dev/schemas/settings.schema.json",
-  "defaultModel": "claude-sonnet-5-5",
-  "defaultProvider": "esy",
-  "defaultThinkingLevel": "medium",
-  "shellPath": "/bin/zsh",
-  "extensions": [
-    "${DOTFILES_DIR}/pi/extensions/rtk.ts",
-    "${DOTFILES_DIR}/pi/extensions/ponytail.ts"
-  ],
-  "skills": [
-    "${DOTFILES_DIR}/pi/skills/*"
-  ],
-  "theme": "dark",
-  "tuiMode": "fullscreen"
-}
-EOF
+  # Generate settings.json from the template with the dotfiles path filled in
+  sed "s#<DOTFILES_DIR>#${DOTFILES_DIR}#g" "${DOTFILES_DIR}/pi/settings.json" >"${HOME}/.pi/agent/settings.json"
+
+  if command -v vibecockpit &>/dev/null; then
+    echo "Hint: run 'vibecockpit --autostart' so the pi MCP entry (http://127.0.0.1:3456/mcp) works."
+  fi
 }
 
 main() {

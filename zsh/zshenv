@@ -16,6 +16,7 @@ path=(
   $path
   "$HOME/.nix-profile/bin"
   "$HOME/.local/bin"
+  "$HOME/bin"
   "$HOME/go/bin"
   "$XDG_CONFIG_HOME/cargo/bin"
   "$GEM_HOME/bin"
