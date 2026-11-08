@@ -43,6 +43,7 @@
           "maxTokens": 64000,
           "input": ["text", "image"],
           "output": ["text"],
+          "reasoning": true,
           "cost": {"input": 0.1, "output": 0.5, "cacheRead": 0.05, "cacheWrite": 0.625}
         },
         {
@@ -66,16 +67,6 @@
           "cost": {"input": 2, "output": 10, "cacheRead": 0.2, "cacheWrite": 2.5}
         },
         {
-          "id": "gpt-5.6-luna",
-          "name": "GPT-5.6 Luna (BBM)",
-          "contextWindow": 922000,
-          "maxTokens": 128000,
-          "input": ["text", "image"],
-          "output": ["text"],
-          "reasoning": true,
-          "cost": {"input": 0.2, "output": 1.2, "cacheRead": 0.02, "cacheWrite": 0.25}
-        },
-        {
           "id": "gpt-5.6-terra",
           "name": "GPT-5.6 Terra (BBM)",
           "contextWindow": 922000,
@@ -92,6 +83,7 @@
           "maxTokens": 128000,
           "input": ["text", "image"],
           "output": ["text"],
+          "reasoning": true,
           "cost": {"input": 0.05, "output": 0.4, "cacheRead": 0.005, "cacheWrite": 0}
         },
         {
@@ -101,6 +93,7 @@
           "maxTokens": 128000,
           "input": ["text", "image"],
           "output": ["text"],
+          "reasoning": true,
           "cost": {"input": 0.25, "output": 2, "cacheRead": 0.025, "cacheWrite": 0}
         },
         {
@@ -110,35 +103,8 @@
           "maxTokens": 128000,
           "input": ["text", "image"],
           "output": ["text"],
-          "cost": {"input": 1.25, "output": 10, "cacheRead": 0.125, "cacheWrite": 0}
-        },
-        {
-          "id": "gpt-5.4-nano",
-          "name": "GPT-5.4 Nano (BBM)",
-          "contextWindow": 272000,
-          "maxTokens": 128000,
-          "input": ["text", "image"],
-          "output": ["text"],
-          "cost": {"input": 0.2, "output": 1.25, "cacheRead": 0.02, "cacheWrite": 0}
-        },
-        {
-          "id": "gpt-5.4-mini",
-          "name": "GPT-5.4 Mini (BBM)",
-          "contextWindow": 272000,
-          "maxTokens": 128000,
-          "input": ["text", "image"],
-          "output": ["text"],
-          "cost": {"input": 0.75, "output": 4.5, "cacheRead": 0.075, "cacheWrite": 0}
-        },
-        {
-          "id": "gpt-5.4",
-          "name": "GPT-5.4 (BBM)",
-          "contextWindow": 922000,
-          "maxTokens": 128000,
-          "input": ["text", "image"],
-          "output": ["text"],
           "reasoning": true,
-          "cost": {"input": 2.5, "output": 15, "cacheRead": 0.25, "cacheWrite": 0}
+          "cost": {"input": 1.25, "output": 10, "cacheRead": 0.125, "cacheWrite": 0}
         },
         {
           "id": "gemini-3.7-flash",
@@ -147,7 +113,8 @@
           "maxTokens": 65536,
           "input": ["text", "image"],
           "output": ["text"],
-          "cost": {"input": 0.75, "output": 3.75, "cacheRead": 0, "cacheWrite": 0}
+          "cost": {"input": 0.75, "output": 3.75, "cacheRead": 0, "cacheWrite": 0},
+          "reasoning": true
         },
         {
           "id": "gemini-3.5-flash-lite",
@@ -156,16 +123,8 @@
           "maxTokens": 65536,
           "input": ["text", "image"],
           "output": ["text"],
-          "cost": {"input": 0.3, "output": 2.5, "cacheRead": 0, "cacheWrite": 0}
-        },
-        {
-          "id": "gemini-2.5-flash-lite",
-          "name": "Gemini 2.5 Flash Lite (BBM)",
-          "contextWindow": 1048576,
-          "maxTokens": 65536,
-          "input": ["text", "image"],
-          "output": ["text"],
-          "cost": {"input": 0.25, "output": 1, "cacheRead": 0.025, "cacheWrite": 0.3125}
+          "cost": {"input": 0.3, "output": 2.5, "cacheRead": 0, "cacheWrite": 0},
+          "reasoning": true
         },
         {
           "id": "deepseek-v4-flash",

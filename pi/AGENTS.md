@@ -7,6 +7,7 @@ Quick reference for installed skills, extensions, and configuration.
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
 | **graphify** | `/skill:graphify` | Turn codebases into queryable knowledge graphs with community detection, AST extraction, and semantic analysis |
+| **logbook** | `/skill:logbook <time-range> [project]` | Create a factual logbook from VibeCockpit chat histories |
 | **grill-me** | `/skill:grill-me` or user mentions "grill me" | Relentless interview about a plan until shared understanding |
 | **worktree** | `/skill:worktree <branch-name>` | Create git worktree from uncommitted changes, spawn Pi in new tmux window |
 | **review** | `/skill:review [--staged\|--pr <n>]` | Systematic code review with checklist |
@@ -18,7 +19,7 @@ Quick reference for installed skills, extensions, and configuration.
 
 | Extension | Purpose |
 |-----------|---------|
-| `rtk.ts` | Token-optimized command rewriter (60-90% savings on git, tests, lint, docker) |
+| `npm:pi-rtk-optimizer` (package) | Token-optimized command rewriter (60-90% savings on git, tests, lint, docker); replaces the old local `rtk.ts` |
 | `ponytail.ts` | Think like the laziest senior dev - question if code is even needed |
 
 ### Ponytail Modes
@@ -44,7 +45,7 @@ Configured in `models.json`:
 |----------|-------|-----|
 | **General coding** | `claude-sonnet-5-5` (ESY) | Best balance of speed and quality |
 | **Complex reasoning** | `claude-opus-5-5` (BBM) | Highest capability |
-| **Fast iteration** | `claude-haiku-5-5` (BBM) | Cheapest, fastest |
+| **Fast iteration** | `claude-haiku-5-5` (BBM) | Cheapest, fastest (ESY only has Haiku 4.5) |
 | **Large context** | `gpt-6-luna` (BBM) | 922K context window |
 | **Cost-effective** | `deepseek-v4-flash` (BBM) | Cheapest per token |
 
@@ -67,61 +68,41 @@ rtk tsc                 rtk ruff check          rtk mypy
 rtk err <cmd>           rtk log <file>          rtk json <file>
 ```
 
-See `RTK.md` for full command reference.
+Full command reference: `claude/RTK.md` (shared).
 
 ## Sandbox (`pi-bwrapped`)
 
 Bubblewrap sandbox with:
 - Read-only: `/usr`, `/etc`, `/nix`, `~/.config/gh`
-- Read-write: `~/.pi`, `~/.cache/pi`, current project
+- Read-write: `~/.pi`, `~/.cache/pi`, `~/vaults`, current project
 - Secrets from `~/.secrets` injected as environment variables
-- Resource limits: 10min CPU, 20GB memory, 1000 processes
+- Resource limits: 1000 processes, 1 GiB max file size (no CPU/VM caps, they kill long sessions)
+- Args passed via `bwrap --args` fd so secrets never show in `ps`
+- Refuses to run from `$HOME`
 
 ## Configuration Files
 
 ```
 pi/
 ├── models.json       # Provider and model definitions
+├── mcp.json          # MCP servers (vibecockpit over HTTP)
+├── settings.json     # Template; <DOTFILES_DIR> filled in by install.sh
 ├── pi-bwrapped       # Bubblewrap sandbox script
 ├── extensions/
-│   └── rtk.ts        # RTK token optimizer
-├── skills/
-│   ├── debug/
-│   ├── graphify/
-│   ├── grill-me/
-│   ├── refactor/
-│   ├── review/
-│   ├── summarize/
-│   └── worktree/
-├── RTK.md            # RTK command reference
+│   └── ponytail.ts
+├── skills -> ../claude/skills   # shared with Claude
 └── AGENTS.md         # This file
 ```
 
 ## Installation
 
-The `install.sh --pi` flag creates:
-- `~/.pi/agent/models.json` → symlink to `pi/models.json`
+`install.sh --pi` creates:
+- `~/.pi/agent/{models,mcp}.json` and `~/.pi/agent/skills` → symlinks into `pi/`
 - `~/.local/bin/pi-bwrapped` → symlink to `pi/pi-bwrapped`
+- `~/.pi/agent/settings.json` generated from `pi/settings.json`
 
-Extensions and skills are loaded from:
-- `~/.pi/agent/extensions/` (user)
-- `~/.pi/agent/skills/` (user)
-- `.pi/extensions/` (project)
-- `.pi/skills/` (project)
-
-To enable the RTK extension, add to `~/.pi/agent/settings.json`:
-```json
-{
-  "extensions": ["~/ws/github/dotfiles/pi/extensions/rtk.ts"]
-}
-```
-
-To enable all skills, add to `~/.pi/agent/settings.json`:
-```json
-{
-  "skills": ["~/ws/github/dotfiles/pi/skills/*"]
-}
-```
+`ponytail.ts` is loaded via an absolute path in `settings.json`; RTK comes from the
+`npm:pi-rtk-optimizer` package. The MCP entry needs `vibecockpit --autostart` (web server on :3456).
 
 ## Environment Variables
 

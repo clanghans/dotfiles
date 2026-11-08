@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "vibecockpit": {
+      "url": "http://127.0.0.1:3456/mcp"
+    }
+  }
+}

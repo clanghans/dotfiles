@@ -3,6 +3,8 @@ set -euo pipefail
 
 # Bubblewrap sandbox for pi (pi-coding-agent). Mirrors claude-bwrapped.
 #
+#   /run/systemd/resolve ro — /etc/resolv.conf is a symlink into here; without it
+#                         DNS fails inside the sandbox.
 #   /nix              ro — pi's Node.js runtime and closure dependencies.
 #   ~/.nix-profile    recreated as a symlink into ~/.local/state/nix/profiles/.
 #   ~/.pi             rw — pi agent dir: settings, models.json, sessions, auth.
@@ -10,15 +12,25 @@ set -euo pipefail
 #   ~/.cache/pi       rw — pi's own cache; narrowed from ~/.cache.
 #   ~/.secrets        parsed and injected as --setenv args; not bound.
 #   ~/ws              rw — workspace root, for git worktree metadata.
+#   ~/.cache/bazelisk rw — downloaded Bazel binaries, so bazelisk does not refetch.
+#   ~/vaults          rw — Obsidian vaults.
+#   ~/.qnx            rw — QNX license state (heartbeats, ownership) and env.
+#   ~/qnx             ro — QNX Software Center / SDP install.
+#   /opt/score_qnx    ro — symlink to ~/.qnx/license, the path QNX tools use.
 #   $(pwd)            rw — the project being worked on (--chdir target).
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
 #   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot
 
-ulimit -t 600           # CPU time (seconds)
-ulimit -v $((20 << 20)) # 20 GiB virtual memory
-ulimit -u 1000          # Max processes
+# Keep process/thread creation bounded without starving parallel builds (e.g. Bazel).
+ulimit -u 8192          # Max processes/threads (RLIMIT_NPROC)
 ulimit -f 1048576       # Max file size (512 MiB; unit is 512-byte blocks)
+# No CPU-time (-t) or virtual-memory (-v) limits: they kill long sessions / V8.
+
+if [[ "$(pwd -P)" == "$(cd "$HOME" && pwd -P)" ]]; then
+  echo "pi-bwrapped: refusing to run from \$HOME (it would be writable); cd into a project." >&2
+  exit 1
+fi
 
 mkdir -p "$HOME/.pi" "$HOME/.cache/pi"
 touch "$HOME/.pi.json"
@@ -57,52 +69,62 @@ if [[ -f "$HOME/.secrets" ]]; then
   parse_env_file "$HOME/.secrets" secret_envs
 fi
 
-exec bwrap \
-  --new-session \
-  --die-with-parent \
-  --unshare-all \
-  --share-net \
-  --cap-drop all \
-  --ro-bind /usr /usr \
-  --ro-bind /etc /etc \
-  --ro-bind /bin /bin \
-  --ro-bind /sbin /sbin \
-  --ro-bind-try /lib /lib \
-  --ro-bind-try /lib64 /lib64 \
-  --ro-bind /nix /nix \
-  --tmpfs /tmp \
-  --tmpfs /var/tmp \
-  --proc /proc \
-  --dev /dev \
-  --tmpfs "$HOME" \
-  --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
-  --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
-  --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv" \
-  --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
-  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
-  --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
-  --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
-  --ro-bind "$HOME/bin" "$HOME/bin" \
-  --bind-try "$HOME/.pi.json" "$HOME/.pi.json" \
-  --bind "$HOME/.pi" "$HOME/.pi" \
-  --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
-  --dir "$HOME/.cache" \
-  --bind "$HOME/.cache/pi" "$HOME/.cache/pi" \
-  --bind-try "$HOME/ws" "$HOME/ws" \
-  --bind "$(pwd)" "$(pwd)" \
-  --chdir "$(pwd)" \
-  --hostname sandbox \
-  --clearenv \
-  --setenv HOME "$HOME" \
-  --setenv HOSTNAME "$HOSTNAME" \
-  --setenv USER "$(id -un)" \
-  --setenv LOGNAME "$(id -un)" \
-  --setenv SHELL "${SHELL:-/bin/bash}" \
-  --setenv TERM "${TERM:-xterm-256color}" \
-  --setenv XDG_CACHE_HOME "$HOME/.cache" \
-  --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
-  --setenv LANG "${LANG:-C.UTF-8}" \
-  --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
-  "${passthrough_envs[@]}" \
-  "${secret_envs[@]}" \
-  -- "$HOME/.local/bin/pi" "$@"
+# Pass the whole argument list through an fd (--args) so secrets never appear
+# in /proc/<pid>/cmdline.
+bwrap_args=(
+  --new-session
+  --die-with-parent
+  --unshare-all
+  --share-net
+  --cap-drop all
+  --ro-bind /usr /usr
+  --ro-bind /etc /etc
+  --ro-bind-try /run/systemd/resolve /run/systemd/resolve
+  --ro-bind /bin /bin
+  --ro-bind /sbin /sbin
+  --ro-bind-try /lib /lib
+  --ro-bind-try /lib64 /lib64
+  --ro-bind /nix /nix
+  --tmpfs /tmp
+  --tmpfs /var/tmp
+  --proc /proc
+  --dev /dev
+  --tmpfs "$HOME"
+  --ro-bind-try "$HOME/.local/state/nix" "$HOME/.local/state/nix"
+  --ro-bind "$HOME/.local/bin" "$HOME/.local/bin"
+  --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv"
+  --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile"
+  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig"
+  --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore"
+  --ro-bind-try "$HOME/.config/git" "$HOME/.config/git"
+  --ro-bind "$HOME/bin" "$HOME/bin"
+  --bind-try "$HOME/.pi.json" "$HOME/.pi.json"
+  --bind "$HOME/.pi" "$HOME/.pi"
+  --ro-bind "$HOME/.config/gh" "$HOME/.config/gh"
+  --dir "$HOME/.cache"
+  --bind "$HOME/.cache/pi" "$HOME/.cache/pi"
+  --bind-try "$HOME/ws" "$HOME/ws"
+  --bind-try "$HOME/.cache/bazelisk" "$HOME/.cache/bazelisk"
+  --bind-try "$HOME/vaults" "$HOME/vaults"
+  --bind-try "$HOME/.qnx" "$HOME/.qnx"
+  --ro-bind-try "$HOME/qnx" "$HOME/qnx"
+  --ro-bind-try /opt/score_qnx /opt/score_qnx
+  --bind "$(pwd)" "$(pwd)"
+  --chdir "$(pwd)"
+  --hostname sandbox
+  --clearenv
+  --setenv HOME "$HOME"
+  --setenv HOSTNAME "$HOSTNAME"
+  --setenv USER "$(id -un)"
+  --setenv LOGNAME "$(id -un)"
+  --setenv SHELL "${SHELL:-/bin/bash}"
+  --setenv TERM "${TERM:-xterm-256color}"
+  --setenv XDG_CACHE_HOME "$HOME/.cache"
+  --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin"
+  --setenv LANG "${LANG:-C.UTF-8}"
+  --setenv LC_ALL "${LC_ALL:-C.UTF-8}"
+)
+bwrap_args+=("${passthrough_envs[@]}" "${secret_envs[@]}")
+
+exec 3< <(printf '%s\0' "${bwrap_args[@]}")
+exec bwrap --args 3 -- "$HOME/.local/bin/pi" "$@"

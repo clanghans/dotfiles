@@ -1,16 +1,15 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
-  "defaultModel": "claude-sonnet-5-5",
-  "defaultProvider": "esy",
+  "defaultModel": "gpt-6-luna",
+  "defaultProvider": "bbm",
   "defaultThinkingLevel": "medium",
   "shellPath": "/bin/zsh",
+  "litellm.drop_params": "True",
+  "packages": ["npm:@sherif-fanous/pi-catppuccin", "npm:pi-rtk-optimizer"],
   "extensions": [
-    "<DOTFILES_DIR>/pi/extensions/rtk.ts",
     "<DOTFILES_DIR>/pi/extensions/ponytail.ts"
   ],
-  "skills": [
-    "<DOTFILES_DIR>/pi/skills/*"
-  ],
-  "theme": "dark",
+  "skills": ["<DOTFILES_DIR>/pi/skills/*"],
+  "theme": "catppuccin-macchiato",
   "tuiMode": "fullscreen"
 }
