@@ -14,10 +14,6 @@ return {
           name = "personal",
           path = "~/vaults/personal",
         },
-        {
-          name = "work",
-          path = "~/vaults/work",
-        },
       },
       mappings = {
         -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.

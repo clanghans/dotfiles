@@ -6,11 +6,6 @@ if (( $+commands[conan] )); then
   alias cep='conan export-pkg'
 fi
 
-# bazel
-if (( $+commands[bazelisk] )); then
-  alias bazel='bazelisk'
-fi
-
 
 # Neovim
 if (( $+commands[nvim] )); then
@@ -110,6 +105,11 @@ fi
 # Claude (sandboxed via bwrap)
 if (( $+commands[claude-bwrapped] )); then
   alias claude='claude-bwrapped'
+fi
+
+# PI (sandboxed via bwrap)
+if (( $+commands[pi-bwrapped] )); then
+  alias pi='pi-bwrapped'
 fi
 
 # PODMAN
