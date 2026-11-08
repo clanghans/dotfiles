@@ -9,6 +9,7 @@ Quick reference for all installed skills, hooks, and extensions.
 | **graphify** | `/graphify` | Turn codebases into queryable knowledge graphs with community detection, AST extraction, and semantic analysis |
 | **grill-me** | User mentions "grill me" or wants to stress-test a design | Relentless interview about a plan until shared understanding |
 | **worktree** | `/worktree <branch-name>` | Create git worktree from uncommitted changes, spawn Claude in new tmux window |
+| **logbook** | `/logbook <time-range> [project]` | Create a factual logbook from VibeCockpit chat histories |
 
 ## Installed Extensions
 
@@ -68,7 +69,7 @@ See `RTK.md` for full command reference.
 
 Bubblewrap sandbox for Claude Code with:
 - Read-only: `/usr`, `/etc`, `/nix`, `~/.config/gh`, `~/.pi`
-- Read-write: `~/.claude`, `~/.cache/claude`, current project
+- Read-write: `~/.claude`, `~/.cache/claude`, `~/vaults`, current project
 - Secrets from `~/.secrets` injected as environment variables
 - Resource limits: 10min CPU, 20GB memory, 1000 processes
 

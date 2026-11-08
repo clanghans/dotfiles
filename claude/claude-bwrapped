@@ -5,6 +5,8 @@ set -euo pipefail
 #
 # Same isolation model as bwrapped (opencode), adapted for claude:
 #
+#   /run/systemd/resolve ro — /etc/resolv.conf is a symlink into here; without it
+#                         DNS fails inside the sandbox.
 #   /nix              ro — claude is a Nix package; its Node.js runtime and
 #                         all closure dependencies live here.
 #   ~/.nix-profile    recreated as a symlink into ~/.local/state/nix/profiles/,
@@ -22,6 +24,11 @@ set -euo pipefail
 #                         main repo's .git/worktrees/ directory.  Without this,
 #                         git commands fail inside a worktree because its .git
 #                         pointer resolves to a path outside $(pwd).
+#   ~/.cache/bazelisk rw — downloaded Bazel binaries, so bazelisk does not refetch.
+#   ~/vaults          rw — Obsidian vaults.
+#   ~/.qnx            rw — QNX license state (heartbeats, ownership) and env.
+#   ~/qnx             ro — QNX Software Center / SDP install.
+#   /opt/score_qnx    ro — symlink to ~/.qnx/license, the path QNX tools use.
 #   $(pwd)            rw — the project being worked on (--chdir target).
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
@@ -73,6 +80,7 @@ exec bwrap \
   --cap-drop all \
   --ro-bind /usr /usr \
   --ro-bind /etc /etc \
+  --ro-bind-try /run/systemd/resolve /run/systemd/resolve \
   --ro-bind /bin /bin \
   --ro-bind /sbin /sbin \
   --ro-bind-try /lib /lib \
@@ -99,6 +107,11 @@ exec bwrap \
   --dir "$HOME/.cache" \
   --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
   --bind-try "$HOME/ws" "$HOME/ws" \
+  --bind-try "$HOME/.cache/bazelisk" "$HOME/.cache/bazelisk" \
+  --bind-try "$HOME/vaults" "$HOME/vaults" \
+  --bind-try "$HOME/.qnx" "$HOME/.qnx" \
+  --ro-bind-try "$HOME/qnx" "$HOME/qnx" \
+  --ro-bind-try /opt/score_qnx /opt/score_qnx \
   --bind "$(pwd)" "$(pwd)" \
   --chdir "$(pwd)" \
   --hostname sandbox \
