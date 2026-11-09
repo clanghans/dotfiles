@@ -72,7 +72,6 @@ fi
 # Pass the whole argument list through an fd (--args) so secrets never appear
 # in /proc/<pid>/cmdline.
 bwrap_args=(
-  --new-session
   --die-with-parent
   --unshare-all
   --share-net
