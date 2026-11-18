@@ -17,8 +17,9 @@ set -euo pipefail
 #                         Read-only; gh auth refresh inside the sandbox is not needed.
 #   ~/.cache/claude   rw — claude's own cache; narrowed from ~/.cache to avoid
 #                         exposing browser caches and limit the exfiltration surface.
-#   ~/.secrets        parsed and injected as individual --setenv args; the file
-#                         itself is not bound into the sandbox.
+#   ~/.secrets        parsed and passed to bwrap through an fd (--args) as --setenv
+#                         entries; the file itself is not bound, and secrets never
+#                         appear in /proc/<pid>/cmdline.
 #   ~/ws              rw — workspace root, bound so claude can reach sibling
 #                         repos and git worktree metadata that lives in the
 #                         main repo's .git/worktrees/ directory.  Without this,
@@ -29,15 +30,24 @@ set -euo pipefail
 #   ~/.qnx            rw — QNX license state (heartbeats, ownership) and env.
 #   ~/qnx             ro — QNX Software Center / SDP install.
 #   /opt/score_qnx    ro — symlink to ~/.qnx/license, the path QNX tools use.
+#   /var/tmp/.qnx     rw — ~/.qnx again, over the /var/tmp tmpfs. The S-CORE QNX
+#                         toolchain sets QNX_CONFIGURATION_EXCLUSIVE=/var/tmp/.qnx,
+#                         so mkifs/qcc look for the license here.
+#   /dev/kvm          rw — bound when the host has it (hardware virtualization).
 #   $(pwd)            rw — the project being worked on (--chdir target).
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
-#   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot
+#   ~/.ssh, ~/.gnupg, ~/.azure, ~/.config (except gh), ~/.copilot, ~/.pi
 
-ulimit -t 600           # CPU time (seconds)
-ulimit -v $((20 << 20)) # 20 GiB virtual memory
-ulimit -u 1000          # Max processes
-ulimit -f 1048576       # Max file size (512 MiB; unit is 512-byte blocks)
+# Keep process/thread creation bounded without starving parallel builds (e.g. Bazel).
+ulimit -u 8192          # Max processes/threads (RLIMIT_NPROC)
+# Max file size: 4 GiB (bash ulimit -f uses 1024-byte blocks). Clamped to the
+# inherited hard limit so the wrapper still starts when that is lower.
+ulimit -f 4194304 2>/dev/null || ulimit -f "$(ulimit -Hf)"
+# No CPU-time (-t) or virtual-memory (-v) limits: they kill long sessions.
+
+# Fall back to the numeric UID when the user has no passwd entry (id -un fails).
+sandbox_user=${USER:-$(id -un 2>/dev/null || id -u)}
 
 mkdir -p "$HOME/.cache/claude"
 touch "$HOME/.claude.json"
@@ -46,17 +56,18 @@ touch "$HOME/.claude.json"
 # drops everything, so any var the sandbox needs (proxy, API endpoints, the
 # Azure DevOps Python feed URLs uv resolves) must be re-injected here. Values
 # live in the outer shell or ~/.secrets; nothing is hardcoded in this script.
-declare -a passthrough_envs=()
+declare -a bwrap_args=()
 for var in http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY \
   ANTHROPIC_BASE_URL CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY \
   UV_INDEX_URL UV_EXTRA_INDEX_URL; do
-  [[ -n "${!var+x}" ]] && passthrough_envs+=(--setenv "$var" "${!var}")
+  [[ -n "${!var+x}" ]] && bwrap_args+=(--setenv "$var" "${!var}")
 done
 
-# Parse ~/.secrets and build --setenv args for each KEY=value line.
-# The file itself is not bound — only the values are injected.
-declare -a secret_envs=()
-if [[ -f "$HOME/.secrets" ]]; then
+# Parse ~/.secrets into --setenv args. The file itself is not bound.
+# Later entries override earlier ones for the same key.
+parse_env_file() {
+  local file="$1"
+  local line key value
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="${line#export }"
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
@@ -68,64 +79,73 @@ if [[ -f "$HOME/.secrets" ]]; then
     if [[ "$value" =~ ^\"(.*)\"$ ]] || [[ "$value" =~ ^\'(.*)\'$ ]]; then
       value="${BASH_REMATCH[1]}"
     fi
-    secret_envs+=(--setenv "$key" "$value")
-  done <"$HOME/.secrets"
+    bwrap_args+=(--setenv "$key" "$value")
+  done <"$file"
+}
+
+if [[ -f "$HOME/.secrets" ]]; then
+  parse_env_file "$HOME/.secrets"
 fi
 
-exec bwrap \
-  --new-session \
-  --die-with-parent \
-  --unshare-all \
-  --share-net \
-  --cap-drop all \
-  --ro-bind /usr /usr \
-  --ro-bind /etc /etc \
-  --ro-bind-try /run/systemd/resolve /run/systemd/resolve \
-  --ro-bind /bin /bin \
-  --ro-bind /sbin /sbin \
-  --ro-bind-try /lib /lib \
-  --ro-bind-try /lib64 /lib64 \
-  --ro-bind /nix /nix \
-  --tmpfs /tmp \
-  --tmpfs /var/tmp \
-  --proc /proc \
-  --dev /dev \
-  --tmpfs "$HOME" \
-  --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix" \
-  --ro-bind "$HOME/.local/bin" "$HOME/.local/bin" \
-  --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv" \
-  --ro-bind-try "$HOME/.local/share/claude" "$HOME/.local/share/claude" \
-  --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile" \
-  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
-  --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore" \
-  --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
-  --ro-bind "$HOME/bin" "$HOME/bin" \
-  --ro-bind-try "$HOME/.pi" "$HOME/.pi" \
-  --bind-try "$HOME/.claude.json" "$HOME/.claude.json" \
-  --bind "$HOME/.claude" "$HOME/.claude" \
-  --ro-bind "$HOME/.config/gh" "$HOME/.config/gh" \
-  --dir "$HOME/.cache" \
-  --bind "$HOME/.cache/claude" "$HOME/.cache/claude" \
-  --bind-try "$HOME/ws" "$HOME/ws" \
-  --bind-try "$HOME/.cache/bazelisk" "$HOME/.cache/bazelisk" \
-  --bind-try "$HOME/vaults" "$HOME/vaults" \
-  --bind-try "$HOME/.qnx" "$HOME/.qnx" \
-  --ro-bind-try "$HOME/qnx" "$HOME/qnx" \
-  --ro-bind-try /opt/score_qnx /opt/score_qnx \
-  --bind "$(pwd)" "$(pwd)" \
-  --chdir "$(pwd)" \
-  --hostname sandbox \
-  --clearenv \
-  --setenv HOME "$HOME" \
-  --setenv HOSTNAME "$HOSTNAME" \
-  --setenv USER "$(id -un)" \
-  --setenv LOGNAME "$(id -un)" \
-  --setenv SHELL "${SHELL:-/bin/bash}" \
-  --setenv TERM "${TERM:-xterm-256color}" \
-  --setenv XDG_CACHE_HOME "$HOME/.cache" \
-  --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin" \
-  --setenv LANG "${LANG:-C.UTF-8}" \
-  --setenv LC_ALL "${LC_ALL:-C.UTF-8}" \
-  "${passthrough_envs[@]}" \
-  "${secret_envs[@]}" \
-  -- $HOME/.local/bin/claude --dangerously-skip-permissions "$@"
+# Full bwrap argument list. It is passed through fd 3 (--args) so secret values
+# never appear in /proc/<pid>/cmdline.
+bwrap_args=(
+  --new-session
+  --die-with-parent
+  --unshare-all
+  --share-net
+  --cap-drop all
+  --ro-bind /usr /usr
+  --ro-bind /etc /etc
+  --ro-bind-try /run/systemd/resolve /run/systemd/resolve
+  --ro-bind /bin /bin
+  --ro-bind /sbin /sbin
+  --ro-bind-try /lib /lib
+  --ro-bind-try /lib64 /lib64
+  --ro-bind /nix /nix
+  --tmpfs /tmp
+  --tmpfs /var/tmp
+  --proc /proc
+  --dev /dev
+  --dev-bind-try /dev/kvm /dev/kvm
+  --tmpfs "$HOME"
+  --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix"
+  --ro-bind "$HOME/.local/bin" "$HOME/.local/bin"
+  --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv"
+  --ro-bind-try "$HOME/.local/share/claude" "$HOME/.local/share/claude"
+  --symlink "$HOME/.local/state/nix/profiles/profile" "$HOME/.nix-profile"
+  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig"
+  --ro-bind-try "$HOME/.gitignore" "$HOME/.gitignore"
+  --ro-bind-try "$HOME/.config/git" "$HOME/.config/git"
+  --ro-bind "$HOME/bin" "$HOME/bin"
+  --bind-try "$HOME/.claude.json" "$HOME/.claude.json"
+  --bind "$HOME/.claude" "$HOME/.claude"
+  --ro-bind "$HOME/.config/gh" "$HOME/.config/gh"
+  --dir "$HOME/.cache"
+  --bind "$HOME/.cache/claude" "$HOME/.cache/claude"
+  --bind-try "$HOME/ws" "$HOME/ws"
+  --bind-try "$HOME/.cache/bazelisk" "$HOME/.cache/bazelisk"
+  --bind-try "$HOME/vaults" "$HOME/vaults"
+  --bind-try "$HOME/.qnx" "$HOME/.qnx"
+  --ro-bind-try "$HOME/qnx" "$HOME/qnx"
+  --ro-bind-try /opt/score_qnx /opt/score_qnx
+  --bind-try "$HOME/.qnx" /var/tmp/.qnx
+  --bind "$(pwd)" "$(pwd)"
+  --chdir "$(pwd)"
+  --hostname sandbox
+  --clearenv
+  --setenv HOME "$HOME"
+  --setenv HOSTNAME "$HOSTNAME"
+  --setenv USER "$sandbox_user"
+  --setenv LOGNAME "$sandbox_user"
+  --setenv SHELL "${SHELL:-/bin/bash}"
+  --setenv TERM "${TERM:-xterm-256color}"
+  --setenv XDG_CACHE_HOME "$HOME/.cache"
+  --setenv PATH "$HOME/.nix-profile/bin:$HOME/bin:/usr/bin:/usr/sbin:/bin:$HOME/.local/bin"
+  --setenv LANG "${LANG:-C.UTF-8}"
+  --setenv LC_ALL "${LC_ALL:-C.UTF-8}"
+  "${bwrap_args[@]}"
+)
+
+exec 3< <(printf '%s\0' "${bwrap_args[@]}")
+exec bwrap --args 3 -- "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
