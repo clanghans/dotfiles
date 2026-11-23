@@ -17,6 +17,9 @@ set -euo pipefail
 #   ~/.qnx            rw — QNX license state (heartbeats, ownership) and env.
 #   ~/qnx             ro — QNX Software Center / SDP install.
 #   /opt/score_qnx    ro — symlink to ~/.qnx/license, the path QNX tools use.
+#   /var/tmp/.qnx     rw — ~/.qnx again, over the /var/tmp tmpfs. The S-CORE QNX
+#                         toolchain sets QNX_CONFIGURATION_EXCLUSIVE=/var/tmp/.qnx,
+#                         so mkifs/qcc look for the license here.
 #   $(pwd)            rw — the project being worked on (--chdir target).
 #
 # Sensitive dirs hidden (tmpfs over $HOME, then selectively re-exported):
@@ -24,7 +27,9 @@ set -euo pipefail
 
 # Keep process/thread creation bounded without starving parallel builds (e.g. Bazel).
 ulimit -u 8192          # Max processes/threads (RLIMIT_NPROC)
-ulimit -f 1048576       # Max file size (512 MiB; unit is 512-byte blocks)
+# Max file size: 4 GiB (bash ulimit -f uses 1024-byte blocks). Clamped to the
+# inherited hard limit so the wrapper still starts when that is lower.
+ulimit -f 4194304 2>/dev/null || ulimit -f "$(ulimit -Hf)"
 # No CPU-time (-t) or virtual-memory (-v) limits: they kill long sessions / V8.
 
 if [[ "$(pwd -P)" == "$(cd "$HOME" && pwd -P)" ]]; then
@@ -88,6 +93,7 @@ bwrap_args=(
   --tmpfs /var/tmp
   --proc /proc
   --dev /dev
+  --dev-bind-try /dev/kvm /dev/kvm
   --tmpfs "$HOME"
   --ro-bind-try "$HOME/.local/state/nix" "$HOME/.local/state/nix"
   --ro-bind "$HOME/.local/bin" "$HOME/.local/bin"
@@ -108,6 +114,7 @@ bwrap_args=(
   --bind-try "$HOME/.qnx" "$HOME/.qnx"
   --ro-bind-try "$HOME/qnx" "$HOME/qnx"
   --ro-bind-try /opt/score_qnx /opt/score_qnx
+  --bind-try "$HOME/.qnx" /var/tmp/.qnx
   --bind "$(pwd)" "$(pwd)"
   --chdir "$(pwd)"
   --hostname sandbox
