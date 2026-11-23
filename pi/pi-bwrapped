@@ -5,7 +5,8 @@ set -euo pipefail
 #
 #   /run/systemd/resolve ro — /etc/resolv.conf is a symlink into here; without it
 #                         DNS fails inside the sandbox.
-#   /nix              ro — pi's Node.js runtime and closure dependencies.
+#   /nix              ro, if present — pi's Node.js runtime and closure
+#                         dependencies, when installed via Nix.
 #   ~/.nix-profile    recreated as a symlink into ~/.local/state/nix/profiles/.
 #   ~/.pi             rw — pi agent dir: settings, models.json, sessions, auth.
 #   ~/.config/gh      ro — GitHub CLI auth.
@@ -88,7 +89,7 @@ bwrap_args=(
   --ro-bind /sbin /sbin
   --ro-bind-try /lib /lib
   --ro-bind-try /lib64 /lib64
-  --ro-bind /nix /nix
+  --ro-bind-try /nix /nix
   --tmpfs /tmp
   --tmpfs /var/tmp
   --proc /proc

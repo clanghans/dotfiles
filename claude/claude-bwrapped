@@ -7,8 +7,9 @@ set -euo pipefail
 #
 #   /run/systemd/resolve ro — /etc/resolv.conf is a symlink into here; without it
 #                         DNS fails inside the sandbox.
-#   /nix              ro — claude is a Nix package; its Node.js runtime and
-#                         all closure dependencies live here.
+#   /nix              ro, if present — when claude is installed as a Nix
+#                         package, its Node.js runtime and closure
+#                         dependencies live here.
 #   ~/.nix-profile    recreated as a symlink into ~/.local/state/nix/profiles/,
 #                         so PATH resolution through the profile works.
 #   ~/.claude         rw — auth tokens, memory files, sessions, settings.
@@ -102,14 +103,14 @@ bwrap_args=(
   --ro-bind /sbin /sbin
   --ro-bind-try /lib /lib
   --ro-bind-try /lib64 /lib64
-  --ro-bind /nix /nix
+  --ro-bind-try /nix /nix
   --tmpfs /tmp
   --tmpfs /var/tmp
   --proc /proc
   --dev /dev
   --dev-bind-try /dev/kvm /dev/kvm
   --tmpfs "$HOME"
-  --ro-bind "$HOME/.local/state/nix" "$HOME/.local/state/nix"
+  --ro-bind-try "$HOME/.local/state/nix" "$HOME/.local/state/nix"
   --ro-bind "$HOME/.local/bin" "$HOME/.local/bin"
   --ro-bind-try "$HOME/.local/share/uv" "$HOME/.local/share/uv"
   --ro-bind-try "$HOME/.local/share/claude" "$HOME/.local/share/claude"
