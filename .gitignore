@@ -54,6 +54,12 @@ hyprland/.runtime/
 graphify-out/
 
 # =========================
+# Synced skill cache
+# =========================
+
+claude/skills/synced/
+
+# =========================
 # Script/runtime leftovers
 # =========================
 
