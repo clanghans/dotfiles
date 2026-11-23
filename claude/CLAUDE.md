@@ -58,6 +58,8 @@ Replace `<WORK_ITEM_ID>` with the actual work item ID and `<ORG>` with the org s
   - Make them self-explanatory
   - Split different concerns into separate commits
 
+@WORKSPACE.md
+
 ## Tool Preferences
 
 - Search: `rg` instead of `grep`

@@ -49,6 +49,10 @@ Configured in `models.json`:
 | **Large context** | `gpt-6-luna` (BBM) | 922K context window |
 | **Cost-effective** | `deepseek-v4-flash` (BBM) | Cheapest per token |
 
+## Upstream Contributions & Workspace Layout
+
+Full reference: `claude/WORKSPACE.md` (shared).
+
 ## RTK Quick Reference
 
 ```bash
